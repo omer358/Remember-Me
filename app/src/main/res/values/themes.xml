@@ -1,5 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Base theme that combines NoActionBar and SplashScreen attributes -->
+    <style name="Base.Theme.RememberMe" parent="android:Theme.Material.Light.NoActionBar">
+        <!-- Splash screen attributes -->
+        <item name="windowSplashScreenBackground">@android:color/holo_blue_dark</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_avatar_1</item>
+    </style>
 
-    <style name="Theme.RememberMe" parent="android:Theme.Material.Light.NoActionBar" />
+    <!-- Custom theme extending the combined base theme -->
+    <style name="Theme.RememberMe" parent="Base.Theme.RememberMe">
+        <!-- Additional customizations for RememberMe theme -->
+    </style>
+
+    <!-- Splash screen theme extending the combined base theme -->
+    <style name="SplashScreenTheme" parent="Base.Theme.RememberMe">
+        <item name="postSplashScreenTheme">@style/Theme.RememberMe</item>
+    </style>
 </resources>
