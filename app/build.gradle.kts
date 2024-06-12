@@ -50,6 +50,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.ui.text.google.fonts)
     val lifecycle_version = "2.8.1"
     val arch_version = "2.2.0"
     val room_version = "2.6.1"
@@ -80,6 +81,9 @@ dependencies {
 
     // Splash screen
     implementation(libs.androidx.core.splashscreen)
+
+    // Navigation Compose
+    implementation(libs.androidx.navigation.compose)
 
 
 }
