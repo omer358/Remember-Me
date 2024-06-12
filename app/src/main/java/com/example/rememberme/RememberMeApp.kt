@@ -1,6 +1,5 @@
 package com.example.rememberme
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -12,16 +11,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.rememberme.common.composable.ListItem
+import com.example.rememberme.presentation.people.PeopleScreen
 import com.example.rememberme.ui.theme.RememberMeTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RememberMeApp(){
-    RememberMeTheme{
+fun RememberMeApp() {
+    RememberMeTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
-        ){
+        ) {
             Scaffold(
                 topBar = {
                     TopAppBar(
@@ -30,16 +29,8 @@ fun RememberMeApp(){
                         }
                     )
                 }
-            ){
-                Column(
-                    modifier = Modifier.padding(it)
-                ) {
-                    ListItem(name = "Otba", meetPlace = "Abu Dhabi",{ println("Clicked!")})
-                    ListItem(name = "Otba", meetPlace = "Abu Dhabi",{println("Clicked!")})
-                    ListItem(name = "Otba", meetPlace = "Abu Dhabi",{println("Clicked!")})
-                    ListItem(name = "Otba", meetPlace = "Abu Dhabi",{println("Clicked!")})
-
-                }
+            ) {
+                PeopleScreen(modifier = Modifier.padding(it))
             }
         }
     }
@@ -48,6 +39,6 @@ fun RememberMeApp(){
 
 @Preview(showBackground = true)
 @Composable
-fun RememberMeAppPreview(){
+fun RememberMeAppPreview() {
     RememberMeApp()
 }
