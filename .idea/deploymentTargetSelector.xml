@@ -4,16 +4,22 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2024-06-04T19:01:38.547929964Z">
+        <DropdownSelection timestamp="2024-06-13T00:07:03.554477936Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="PhysicalDevice" identifier="serial=MNV9K18530902276" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=/home/omer358/.android/avd/Pixel_7_Pro_API_31.avd" />
             </handle>
           </Target>
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
       <SelectionState runConfigName="PeopleScreenContentPreview">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="PeopleDatabaseTest">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="All Tests">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

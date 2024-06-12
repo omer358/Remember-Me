@@ -1,6 +1,10 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.compose.compiler)
+
+    id("com.google.devtools.ksp")
+
 }
 
 android {
@@ -40,7 +44,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.5.14"
     }
     packaging {
         resources {
@@ -50,10 +54,6 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.ui.text.google.fonts)
-    val lifecycle_version = "2.8.1"
-    val arch_version = "2.2.0"
-    val room_version = "2.6.1"
     
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -68,13 +68,26 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
+    testImplementation(libs.androidx.core.testing)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    androidTestImplementation(libs.truth)
+    androidTestImplementation(libs.core.testing)
 
 
     implementation(libs.androidx.room.runtime)
     annotationProcessor(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
+    testImplementation(libs.androidx.room.room.testing)
+    ksp(libs.androidx.room.compiler)
+
+
+
+    // Google font
+    implementation(libs.androidx.ui.text.google.fonts)
+
+    implementation(libs.androidx.junit.ktx)
 
     // ViewModel utilities for Compose
     implementation(libs.androidx.lifecycle.viewmodel.compose)

@@ -6,6 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
 import com.example.rememberme.presentation.onboarding.OnBoardingScreen
+import com.example.rememberme.presentation.people.PeopleScreen
 
 @Composable
 fun NavGraph(
@@ -17,7 +18,7 @@ fun NavGraph(
         startDestination = startDestination
     ){
         navigation(
-            route = Routes.OnBoardingScreen.route,
+            route = Routes.AppStartNavigation.route,
             startDestination = Routes.OnBoardingScreen.route,
         ){
             composable(
@@ -25,6 +26,26 @@ fun NavGraph(
             ) {
                 OnBoardingScreen(
                 )
+            }
+        }
+        navigation(
+            route = Routes.PeopleNavigation.route,
+            startDestination = Routes.PeopleListScreen.route,
+        ){
+            composable(
+                route = Routes.PeopleListScreen.route
+            ){
+                PeopleScreen()
+            }
+            composable(
+                route = Routes.AddPersonScreen.route,
+            ){
+                //TODO add person screen
+            }
+            composable(
+                route = Routes.PersonDetailsScreen.route
+            ){
+                //TODO person details screen
             }
         }
     }
