@@ -1,6 +1,7 @@
 package com.example.rememberme.presentation.navgraph
 
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -10,9 +11,10 @@ import com.example.rememberme.presentation.people.PeopleScreen
 
 @Composable
 fun NavGraph(
-    startDestination: String
+    startDestination: String,
+    navController: NavHostController = rememberNavController()
 ){
-    val navController = rememberNavController()
+
     NavHost(
         navController = navController,
         startDestination = startDestination

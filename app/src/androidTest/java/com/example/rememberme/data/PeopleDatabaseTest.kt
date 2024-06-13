@@ -1,4 +1,4 @@
-package com.example.rememberme
+package com.example.rememberme.data
 
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
