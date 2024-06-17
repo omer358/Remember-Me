@@ -2,8 +2,10 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.compose.compiler)
-
     id("com.google.devtools.ksp")
+    id("com.google.dagger.hilt.android")
+    id("kotlin-kapt")
+//    kapt("groupId:artifactId:version")
 
 }
 
@@ -99,5 +101,9 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     androidTestImplementation(libs.androidx.navigation.testing)
 
+    // Hilt
+    implementation(libs.hilt.android)
+    implementation(libs.androidx.hilt.navigation.compose)
+    kapt(libs.hilt.compiler)
 
 }
