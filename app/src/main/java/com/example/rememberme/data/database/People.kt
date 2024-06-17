@@ -15,4 +15,9 @@ data class People (
     @ColumnInfo(name ="note")var note:String? = null,
     @ColumnInfo(name = "registration_time")val registrationTime: Long = System.currentTimeMillis(),
     var gender:String,
-    var avatar: Int)
+    var avatar: Int){
+    override fun toString(): String {
+        return "$firstName $secondName"
+    }
+
+}
