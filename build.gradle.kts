@@ -5,6 +5,16 @@ plugins {
     alias(libs.plugins.compose.compiler) apply false
     id("com.google.devtools.ksp") version "2.0.0-1.0.22" apply false
     id("com.google.dagger.hilt.android") version "2.44" apply false
-
-
+}
+buildscript {
+    val kotlinVersion by extra("2.0.0")
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath(libs.gradle)
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
+        classpath(libs.hilt.android.gradle.plugin)
+    }
 }

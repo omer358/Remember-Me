@@ -9,10 +9,18 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+//    @Inject
+//    lateinit var peopleDao: PeopleDao
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         installSplashScreen()
+
+//        lifecycleScope.launch {
+//            withContext(Dispatchers.IO){
+//                peopleDao.insertAll(FakeDataSource.getPeopleList())
+//            }
+//        }
         setContent {
             RememberMeApp()
         }

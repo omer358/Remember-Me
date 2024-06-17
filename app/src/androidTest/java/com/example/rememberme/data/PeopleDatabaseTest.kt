@@ -4,8 +4,8 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
-import com.example.rememberme.data.database.People
-import com.example.rememberme.data.database.PeopleDatabase
+import com.example.rememberme.data.local.PeopleDatabase
+import com.example.rememberme.domain.model.People
 import com.example.remindme.database.PeopleDao
 import kotlinx.coroutines.runBlocking
 import org.junit.After
@@ -122,7 +122,7 @@ class PeopleDatabaseTest {
             avatar = 2
         )
 
-        peopleDao.insertAll(person1, person2)
+        peopleDao.insertAll(listOf(person1, person2))
 
         peopleDao.clear()
         val people = peopleDao.getAll()

@@ -10,7 +10,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.example.rememberme.R
-import com.example.rememberme.data.database.People
+import com.example.rememberme.domain.model.People
 import com.example.rememberme.presentation.details.PersonDetailsScreen
 import com.example.rememberme.presentation.details.PersonDetailsViewModel
 import com.example.rememberme.presentation.onboarding.OnBoardingScreen

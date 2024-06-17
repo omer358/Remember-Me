@@ -1,4 +1,4 @@
-package com.example.rememberme.data.database
+package com.example.rememberme.domain.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

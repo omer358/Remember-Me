@@ -1,7 +1,7 @@
 package com.example.rememberme.data
 
 import com.example.rememberme.R
-import com.example.rememberme.data.database.People
+import com.example.rememberme.domain.model.People
 
 object FakeDataSource {
     fun getPeopleList(): List<People> {

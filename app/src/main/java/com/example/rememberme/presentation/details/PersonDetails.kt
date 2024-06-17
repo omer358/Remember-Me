@@ -29,7 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.rememberme.R
-import com.example.rememberme.data.database.People
+import com.example.rememberme.domain.model.People
 import com.example.rememberme.ui.theme.RememberMeTheme
 
 @Composable

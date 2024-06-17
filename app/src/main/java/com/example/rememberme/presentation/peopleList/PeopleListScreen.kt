@@ -13,30 +13,39 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.rememberme.R
 import com.example.rememberme.data.FakeDataSource
+import com.example.rememberme.domain.model.People
 import com.example.rememberme.presentation.composable.PeopleListItem
 import com.example.rememberme.ui.theme.RememberMeTheme
 
 @Composable
 fun PeopleScreen(
     modifier: Modifier = Modifier,
-    viewModel: PeopleViewModel = PeopleViewModel(),
+    viewModel: PeopleViewModel = hiltViewModel(),
     navigateToDetailScreen: (Long) -> Unit
 ) {
-    PeopleScreenContent(modifier, navigateToDetailScreen)
+    val people = viewModel.people.collectAsState(initial = emptyList())
+    PeopleScreenContent(people, modifier, navigateToDetailScreen)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PeopleScreenContent(modifier: Modifier = Modifier, navigateToDetailScreen: (Long) -> Unit) {
+fun PeopleScreenContent(
+    peopleState: State<List<People>>,
+    modifier: Modifier = Modifier,
+    navigateToDetailScreen: (Long) -> Unit
+) {
 
-    val peopleList = remember { FakeDataSource.getPeopleList() }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -64,8 +73,8 @@ fun PeopleScreenContent(modifier: Modifier = Modifier, navigateToDetailScreen: (
                 .fillMaxSize()
                 .testTag("PeopleListScreen")
         ) {
-            items(count = peopleList.size) { index ->
-                PeopleListItem(peopleList[index], { personId ->
+            items(count = peopleState.value.size) { index ->
+                PeopleListItem(peopleState.value[index], { personId ->
                     navigateToDetailScreen(personId)
                 })
             }
@@ -78,7 +87,12 @@ fun PeopleScreenContent(modifier: Modifier = Modifier, navigateToDetailScreen: (
 @Composable
 fun PeopleScreenContentPreview() {
     RememberMeTheme {
-        PeopleScreenContent(navigateToDetailScreen = {})
+        PeopleScreenContent(
+            peopleState = remember {
+                mutableStateOf(FakeDataSource.getPeopleList())
+            },
+            navigateToDetailScreen = {}
+        )
     }
 }
 
