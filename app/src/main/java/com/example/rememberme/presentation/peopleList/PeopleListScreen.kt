@@ -1,4 +1,4 @@
-package com.example.rememberme.presentation.people
+package com.example.rememberme.presentation.peopleList
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,44 +26,48 @@ import com.example.rememberme.ui.theme.RememberMeTheme
 @Composable
 fun PeopleScreen(
     modifier: Modifier = Modifier,
-    viewModel: PeopleViewModel = PeopleViewModel()
+    viewModel: PeopleViewModel = PeopleViewModel(),
+    navigateToDetailScreen: (Long) -> Unit
 ) {
-    PeopleScreenContent(modifier)
+    PeopleScreenContent(modifier, navigateToDetailScreen)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PeopleScreenContent(modifier: Modifier = Modifier) {
+fun PeopleScreenContent(modifier: Modifier = Modifier, navigateToDetailScreen: (Long) -> Unit) {
 
     val peopleList = remember { FakeDataSource.getPeopleList() }
     Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = {
-                        Text(stringResource(id = R.string.app_name))
-                    },
-                )
-            },
-    floatingActionButton = {
-        FloatingActionButton(
-            onClick = {
-
-            }
-        ) {
-            Icon(
-                imageVector = Icons.Default.Add,
-                contentDescription = "Add a new Person"
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(stringResource(id = R.string.app_name))
+                },
             )
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {
+
+                }
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Add a new Person"
+                )
+            }
         }
-    }
-    ){
+    ) { it ->
         LazyColumn(
-            modifier = modifier.padding(it)
+            modifier = modifier
+                .padding(it)
                 .fillMaxSize()
                 .testTag("PeopleListScreen")
         ) {
             items(count = peopleList.size) { index ->
-                PeopleListItem(peopleList[index], {})
+                PeopleListItem(peopleList[index], { personId ->
+                    navigateToDetailScreen(personId)
+                })
             }
         }
     }
@@ -74,7 +78,7 @@ fun PeopleScreenContent(modifier: Modifier = Modifier) {
 @Composable
 fun PeopleScreenContentPreview() {
     RememberMeTheme {
-        PeopleScreenContent()
+        PeopleScreenContent(navigateToDetailScreen = {})
     }
 }
 

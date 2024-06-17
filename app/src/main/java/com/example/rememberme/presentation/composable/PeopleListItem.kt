@@ -21,7 +21,7 @@ import com.example.rememberme.ui.theme.RememberMeTheme
 @Composable
 fun PeopleListItem(
     people: People,
-    onClickListener: () -> Unit,
+    onClickListener: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
     ListItem(
@@ -29,11 +29,11 @@ fun PeopleListItem(
             .padding(horizontal = 8.dp, vertical = 4.dp)
             .clip(shape = RoundedCornerShape(8.dp))
             .clickable {
-                onClickListener()
+                onClickListener(people.id)
             },
         leadingContent = {
             Image(
-                painter = painterResource(id = R.drawable.ic_f1),
+                painter = painterResource(people.avatar),
                 modifier = Modifier.size(64.dp),
                 contentDescription = null
             )
