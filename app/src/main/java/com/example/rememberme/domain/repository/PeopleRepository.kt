@@ -9,6 +9,6 @@ interface PeopleRepository {
     suspend fun deletePeople(people: People)
     suspend fun updatePeople(people: People)
     suspend fun deleteAllPeople()
-    suspend fun getPeopleById(id: Int): People?
+    suspend fun getPeopleById(id: Long): Flow<People?>
     suspend fun getPeopleByName(name: String): List<People?>
 }

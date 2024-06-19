@@ -1,10 +1,9 @@
-package com.example.rememberme.data
+package com.example.rememberme.data.local
 
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
-import com.example.rememberme.data.local.PeopleDatabase
 import com.example.rememberme.domain.model.People
 import com.example.remindme.database.PeopleDao
 import kotlinx.coroutines.runBlocking

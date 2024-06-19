@@ -13,23 +13,23 @@ class PeopleRepositoryImpl(
     }
 
     override suspend fun insertPeople(people: People) {
-        TODO("Not yet implemented")
+        peopleDao.insert(people)
     }
 
     override suspend fun deletePeople(people: People) {
-        TODO("Not yet implemented")
+        peopleDao.removePerson(people.id)
     }
 
     override suspend fun updatePeople(people: People) {
-        TODO("Not yet implemented")
+        peopleDao.update(people)
     }
 
     override suspend fun deleteAllPeople() {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getPeopleById(id: Int): People? {
-        TODO("Not yet implemented")
+    override suspend fun getPeopleById(id: Long): Flow<People?> {
+        return peopleDao.getPerson(id)
     }
 
     override suspend fun getPeopleByName(name: String): List<People?> {

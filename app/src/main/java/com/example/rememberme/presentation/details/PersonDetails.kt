@@ -1,8 +1,10 @@
 package com.example.rememberme.presentation.details
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,9 +22,11 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -32,14 +36,22 @@ import com.example.rememberme.R
 import com.example.rememberme.domain.model.People
 import com.example.rememberme.ui.theme.RememberMeTheme
 
+private const val TAG = "PersonDetails"
+
 @Composable
 fun PersonDetailsScreen(
-    person: People,
-    viewModel: PersonDetailsViewModel = hiltViewModel()
+    viewModel: PersonDetailsViewModel = hiltViewModel(),
+    personId: Long
 ) {
-    PersonDetailsContent(
-        person = person,
-    )
+    viewModel.getPerson(personId)
+    val person = viewModel.person.collectAsState().value
+    //TODO: Check and see why the object is null and then become non-null
+    if (person != null) {
+        Log.d(TAG, "PersonDetailsScreen: $person")
+        PersonDetailsContent(person)
+    } else {
+        Log.e(TAG, "PersonDetailsScreen: Person not found")
+    }
 }
 
 @Composable
@@ -61,6 +73,7 @@ fun PersonDetailsContent(
         ) {
             Box(
                 modifier = Modifier
+                    .shadow(elevation = 16.dp)
                     .clip(
                         RoundedCornerShape(bottomStart = 8.dp, bottomEnd = 8.dp)
                     )
@@ -73,6 +86,8 @@ fun PersonDetailsContent(
                 modifier = Modifier
                     .padding(start = 8.dp)
                     .clip(CircleShape)
+                    .shadow(elevation = 16.dp)
+                    .border(2.dp, MaterialTheme.colorScheme.secondary, CircleShape)
                     .background(MaterialTheme.colorScheme.inversePrimary)
                     .size(120.dp)
                     .align(Alignment.BottomStart)

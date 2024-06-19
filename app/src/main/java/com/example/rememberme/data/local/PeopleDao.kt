@@ -1,6 +1,5 @@
 package com.example.remindme.database
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -22,7 +21,7 @@ interface PeopleDao {
     fun update (people: People)
 
     @Query("SELECT * FROM people_table WHERE id = :key")
-    fun getPerson(key: Long):LiveData<People>
+    fun getPerson(key: Long):Flow<People>
 
     @Query("DELETE FROM people_table")
     fun clear()
