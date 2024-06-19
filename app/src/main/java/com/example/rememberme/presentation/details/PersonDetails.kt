@@ -18,45 +18,106 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonColors
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.rememberme.R
 import com.example.rememberme.domain.model.People
 import com.example.rememberme.ui.theme.RememberMeTheme
+import kotlinx.coroutines.launch
 
 private const val TAG = "PersonDetails"
 
 @Composable
 fun PersonDetailsScreen(
     viewModel: PersonDetailsViewModel = hiltViewModel(),
-    personId: Long
+    personId: Long,
+    navigateUp: () -> Unit
 ) {
-    viewModel.getPerson(personId)
-    val person = viewModel.person.collectAsState().value
-    //TODO: Check and see why the object is null and then become non-null
-    if (person != null) {
-        Log.d(TAG, "PersonDetailsScreen: $person")
-        PersonDetailsContent(person)
-    } else {
-        Log.e(TAG, "PersonDetailsScreen: Person not found")
+    val uiState = viewModel.uiState.collectAsStateWithLifecycle()
+    val coroutineScope = rememberCoroutineScope()
+
+
+    LaunchedEffect(personId) {
+        coroutineScope.launch {
+            viewModel.onEvent(PersonDetailsEvent.LoadPerson(personId))
+        }
+    }
+    when {
+        uiState.value.isLoading -> {
+            LoadingIndicator()
+            Log.d(TAG, "PersonDetailsScreen: Loading")
+        }
+        uiState.value.error != null -> {
+            Log.e(TAG, "PersonDetailsScreen: Error - ${uiState.value.error}")
+            ErrorContent(uiState.value.error!!)
+        }
+        uiState.value.person != null -> {
+            Log.d(TAG, "PersonDetailsScreen: ${uiState.value.person}")
+            PersonDetailsContent(uiState.value.person!!, navigateUp)
+        }
+        else -> {
+            Log.e(TAG, "PersonDetailsScreen: Person not found")
+            // Optionally, you can add a UI to show "Person not found"
+        }
+    }
+}
+
+@Composable
+fun ErrorContent(error: String) {
+    // TODO: Implement a custom Error animation in the future
+    Column {
+        Icon(
+            imageVector = Icons.Default.Warning,
+            contentDescription = null,
+            modifier = Modifier
+                .size(120.dp)
+                .align(Alignment.CenterHorizontally)
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(text = error, style = MaterialTheme.typography.headlineLarge)
+    }
+}
+
+@Composable
+fun LoadingIndicator() {
+    // TODO: Implement a custom Loading animation in the future
+    Column (
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ){
+        CircularProgressIndicator()
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(text = "Loading...")
     }
 }
 
 @Composable
 fun PersonDetailsContent(
     person: People,
+    navigateUp: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val scrollState = rememberScrollState()
@@ -81,7 +142,27 @@ fun PersonDetailsContent(
                     .fillMaxWidth()
                     .height(200.dp)
 
-            )
+            ) {
+                IconButton(
+                    modifier = Modifier
+                        .align(Alignment.TopStart)
+                        .padding(top = 16.dp, start = 8.dp),
+                    colors = IconButtonColors(
+                        contentColor = MaterialTheme.colorScheme.onPrimary,
+                        disabledContentColor = MaterialTheme.colorScheme.onPrimary,
+                        containerColor = Color.Transparent,
+                        disabledContainerColor = Color.Transparent
+                    ),
+                    onClick = {
+                        Log.d(TAG, "PersonDetailsContent: Clicked")
+                        navigateUp()
+                    }) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                        contentDescription = null
+                    )
+                }
+            }
             Box(
                 modifier = Modifier
                     .padding(start = 8.dp)
@@ -153,7 +234,6 @@ fun PersonDetailsContent(
             }
         }
     }
-
 }
 
 @Preview(showBackground = true)
@@ -162,14 +242,27 @@ fun PersonDetailsContent(
 fun PersonDetailsContentPreview() {
     RememberMeTheme {
         PersonDetailsContent(
-            People(
+            person = People(
                 firstName = "William",
                 secondName = "Doe",
-                avatar = R.drawable.ic_m3,
-                time = "10:00 AM",
+                gender = "Male",
+                time = "12:00",
                 place = "Home",
-                gender = "Male"
-            )
+                avatar = R.drawable.ic_m4
+            ),
+            navigateUp = {
+                Log.d(TAG, "PersonDetailsContentPreview: Clicked")
+            }
         )
     }
 }
+
+@Preview(showBackground = true)
+@Preview(uiMode = UI_MODE_NIGHT_YES)
+@Composable
+fun LoadingIndicatorContentPreview() {
+    RememberMeTheme {
+        LoadingIndicator()
+    }
+}
+

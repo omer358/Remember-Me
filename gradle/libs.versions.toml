@@ -24,6 +24,7 @@ roomRuntime = "2.6.1"
 truth = "1.4.2"
 uiTextGoogleFonts = "1.6.8"
 junitKtx = "1.1.5"
+lifecycleRuntimeComposeAndroid = "2.8.2"
 
 
 
@@ -64,6 +65,7 @@ mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockitoCore
 mockito-inline = { module = "org.mockito:mockito-inline", version.ref = "mockitoInline" }
 mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockitoKotlin" }
 truth = { module = "com.google.truth:truth", version.ref = "truth" }
+androidx-lifecycle-runtime-compose-android = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose-android", version.ref = "lifecycleRuntimeComposeAndroid" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

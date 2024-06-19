@@ -57,6 +57,9 @@ fun NavGraph(
                 if (personId != null) {
                     PersonDetailsScreen(
                         personId = personId,
+                        navigateUp = {
+                            navController.navigateUp()
+                        }
                     )
                 }
             }
