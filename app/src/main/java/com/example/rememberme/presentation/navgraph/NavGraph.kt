@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
+import com.example.rememberme.presentation.addperson.AddPersonScreen
 import com.example.rememberme.presentation.details.PersonDetailsScreen
 import com.example.rememberme.presentation.onboarding.OnBoardingScreen
 import com.example.rememberme.presentation.peopleList.PeopleScreen
@@ -42,12 +43,19 @@ fun NavGraph(
             ) {
                 PeopleScreen(navigateToDetailScreen = { personId ->
                     navController.navigate(Routes.PersonDetailsScreen.route + "/$personId")
+                },
+                    navigateToAddNewPersonScreen = {
+                        navController.navigate(Routes.AddPersonScreen.route)
                 })
             }
             composable(
                 route = Routes.AddPersonScreen.route,
             ) {
-                //TODO add person screen
+                AddPersonScreen(
+                    popUp = {
+                        navController.navigateUp()
+                    }
+                )
             }
             composable(
                 route = Routes.PersonDetailsScreen.route + "/{personId}",

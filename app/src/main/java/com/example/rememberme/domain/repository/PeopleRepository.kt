@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface PeopleRepository {
     fun getAllPeople(): Flow<List<People>>
-    suspend fun insertPeople(people: People)
+    suspend fun insertNewPerson(people: People)
     suspend fun deletePeople(people: People)
     suspend fun updatePeople(people: People)
     suspend fun deleteAllPeople()

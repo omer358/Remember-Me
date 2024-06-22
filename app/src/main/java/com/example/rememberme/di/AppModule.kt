@@ -7,6 +7,7 @@ import com.example.rememberme.data.local.PeopleDatabase
 import com.example.rememberme.domain.repository.PeopleRepository
 import com.example.rememberme.domain.usecases.people.GetAllPeople
 import com.example.rememberme.domain.usecases.people.GetPersonById
+import com.example.rememberme.domain.usecases.people.InsertNewPerson
 import com.example.rememberme.domain.usecases.people.PeopleUseCases
 import com.example.rememberme.utils.Constants.PEOPLE_DATABASE_NAME
 import com.example.remindme.database.PeopleDao
@@ -54,7 +55,8 @@ object AppModule {
     ): PeopleUseCases {
         return PeopleUseCases(
             getAllPeople = GetAllPeople(peopleRepository),
-            getPersonById = GetPersonById(peopleRepository)
+            getPersonById = GetPersonById(peopleRepository),
+            insertPerson = InsertNewPerson(peopleRepository)
         )
     }
 

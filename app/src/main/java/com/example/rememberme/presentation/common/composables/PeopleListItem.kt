@@ -1,4 +1,4 @@
-package com.example.rememberme.presentation.composable
+package com.example.rememberme.presentation.common.composables
 
 import android.content.res.Configuration
 import androidx.compose.foundation.Image

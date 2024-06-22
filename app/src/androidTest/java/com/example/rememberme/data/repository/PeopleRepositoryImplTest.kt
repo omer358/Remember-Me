@@ -34,8 +34,8 @@
 //                1, "John", secondName = "Doe", place = "", time = "", gender = "",avatar= R.drawable.ic_m3,),
 //            People(1, "John", secondName = "Doe", place = "", time = "", gender = "",avatar= R.drawable.ic_m3,)
 //        )
-//        peopleRepository.insertPeople(peopleList[0])
-//        peopleRepository.insertPeople(peopleList[1])
+//        peopleRepository.insertNewPerson(peopleList[0])
+//        peopleRepository.insertNewPerson(peopleList[1])
 //
 //        // Act
 //        val result = peopleRepository.getAllPeople()
@@ -52,10 +52,10 @@
 ////        val person = People(1, "John", secondName = "Doe", place = "", time = "", gender = "",avatar= R.drawable.ic_m3,)
 ////
 ////        // Act
-////        peopleRepository.insertPeople(person)
+////        peopleRepository.insertNewPerson(person)
 ////
 ////        // Assert
-////        Mockito.verify(peopleDao, Mockito.times(1)).insertPeople(person)
+////        Mockito.verify(peopleDao, Mockito.times(1)).insertNewPerson(person)
 ////    }
 ////
 ////    @Test

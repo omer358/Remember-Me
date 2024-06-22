@@ -12,7 +12,7 @@ class PeopleRepositoryImpl(
         return peopleDao.getAllPeople()
     }
 
-    override suspend fun insertPeople(people: People) {
+    override suspend fun insertNewPerson(people: People) {
         peopleDao.insert(people)
     }
 

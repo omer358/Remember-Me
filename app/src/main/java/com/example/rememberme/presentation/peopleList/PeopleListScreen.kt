@@ -25,17 +25,18 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.rememberme.R
 import com.example.rememberme.data.FakeDataSource
 import com.example.rememberme.domain.model.People
-import com.example.rememberme.presentation.composable.PeopleListItem
+import com.example.rememberme.presentation.common.composables.PeopleListItem
 import com.example.rememberme.ui.theme.RememberMeTheme
 
 @Composable
 fun PeopleScreen(
     modifier: Modifier = Modifier,
     viewModel: PeopleViewModel = hiltViewModel(),
-    navigateToDetailScreen: (Long) -> Unit
+    navigateToDetailScreen: (Long) -> Unit,
+    navigateToAddNewPersonScreen:() -> Unit
 ) {
     val people = viewModel.people.collectAsState(initial = emptyList())
-    PeopleScreenContent(people, modifier, navigateToDetailScreen)
+    PeopleScreenContent(people, modifier, navigateToDetailScreen, navigateToAddNewPersonScreen)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -43,7 +44,8 @@ fun PeopleScreen(
 fun PeopleScreenContent(
     peopleState: State<List<People>>,
     modifier: Modifier = Modifier,
-    navigateToDetailScreen: (Long) -> Unit
+    navigateToDetailScreen: (Long) -> Unit,
+    navigateToAddNewPersonScreen: () -> Unit
 ) {
 
     Scaffold(
@@ -57,7 +59,7 @@ fun PeopleScreenContent(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-
+                    navigateToAddNewPersonScreen()
                 }
             ) {
                 Icon(
@@ -91,7 +93,8 @@ fun PeopleScreenContentPreview() {
             peopleState = remember {
                 mutableStateOf(FakeDataSource.getPeopleList())
             },
-            navigateToDetailScreen = {}
+            navigateToDetailScreen = {},
+            navigateToAddNewPersonScreen = {}
         )
     }
 }
