@@ -5,7 +5,7 @@ plugins {
     id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
     id("kotlin-kapt")
-//    kapt("groupId:artifactId:version")
+    id("com.google.gms.google-services")
 
 }
 
@@ -111,4 +111,7 @@ dependencies {
     testImplementation(libs.mockito.inline)
     testImplementation(libs.mockito.kotlin)
     testImplementation(libs.kotlinx.coroutines.test)
+
+    // Firebase Bom
+    implementation(libs.firebase.bom)
 }
