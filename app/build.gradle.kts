@@ -1,6 +1,12 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.compose.compiler)
+    id("com.google.devtools.ksp")
+    id("com.google.dagger.hilt.android")
+    id("kotlin-kapt")
+    id("com.google.gms.google-services")
+
 }
 
 android {
@@ -30,17 +36,17 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.5.14"
     }
     packaging {
         resources {
@@ -50,9 +56,6 @@ android {
 }
 
 dependencies {
-    val lifecycle_version = "2.8.1"
-    val arch_version = "2.2.0"
-    val room_version = "2.6.1"
     
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -62,22 +65,53 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.lifecycle.runtime.compose.android)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
+    testImplementation(libs.androidx.core.testing)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+    androidTestImplementation(libs.truth)
+    androidTestImplementation(libs.core.testing)
+
 
     implementation(libs.androidx.room.runtime)
-    annotationProcessor(libs.androidx.room.compiler)
+    ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
+    testImplementation(libs.androidx.room.room.testing)
+
+
+
+    // Google font
+    implementation(libs.androidx.ui.text.google.fonts)
+
+    implementation(libs.androidx.junit.ktx)
 
     // ViewModel utilities for Compose
     implementation(libs.androidx.lifecycle.viewmodel.compose)
+
+    // Splash screen
     implementation(libs.androidx.core.splashscreen)
 
+    // Navigation Compose
+    implementation(libs.androidx.navigation.compose)
+    androidTestImplementation(libs.androidx.navigation.testing)
 
+    // Hilt
+    implementation(libs.hilt.android)
+    implementation(libs.androidx.hilt.navigation.compose)
+    kapt(libs.hilt.compiler)
+
+    // Unit Test
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.inline)
+    testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.kotlinx.coroutines.test)
+
+    // Firebase Bom
+    implementation(libs.firebase.bom)
 }

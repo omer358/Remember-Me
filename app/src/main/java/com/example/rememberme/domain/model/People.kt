@@ -1,4 +1,4 @@
-package com.example.rememberme.data.database
+package com.example.rememberme.domain.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -12,7 +12,12 @@ data class People (
     @ColumnInfo(name = "second_name") var secondName: String,
     @ColumnInfo(name = "meeting_place") var place: String,
     @ColumnInfo(name = "meeting_time") var time: String,
-    @ColumnInfo(name ="note")var note:String?,
+    @ColumnInfo(name ="note")var note:String? = null,
     @ColumnInfo(name = "registration_time")val registrationTime: Long = System.currentTimeMillis(),
     var gender:String,
-    var avatar: Int)
+    var avatar: Int){
+    override fun toString(): String {
+        return "$firstName $secondName"
+    }
+
+}
