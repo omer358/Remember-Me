@@ -1,8 +1,8 @@
 package com.example.rememberme.presentation.addperson
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.rememberme.R
 import com.example.rememberme.domain.model.People
 import com.example.rememberme.domain.usecases.people.PeopleUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -47,6 +47,7 @@ class AddPersonViewModel @Inject constructor(
             }
 
             is AddPersonEvents.OnAvatarChange -> {
+                Log.i(TAG, "onEvent: OnAvatarChange -> ${event.avatar}")
                 _uiState.value = _uiState.value.copy(avatar = event.avatar)
             }
 
@@ -67,10 +68,14 @@ class AddPersonViewModel @Inject constructor(
                     note = _uiState.value.note,
                     gender = _uiState.value.gender,
                     // TODO: get avatar from the ui
-                    avatar = R.drawable.ic_m1
+                    avatar = _uiState.value.avatar
                 )
                 peopleUseCases.insertPerson(person)
             }
         }
     }
+    companion object {
+        private const val TAG = "AddPersonViewModel"
+    }
+
 }
