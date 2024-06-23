@@ -40,6 +40,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -69,7 +70,6 @@ fun AddPersonScreen(
         onTimeChange = { viewModel.onEvent(AddPersonEvents.OnTimeChange(it)) },
         onNoteChange = { viewModel.onEvent(AddPersonEvents.OnNoteChange(it)) },
         onGenderChange = { viewModel.onEvent(AddPersonEvents.OnGenderChange(it)) },
-        onAvatarChange = { viewModel.onEvent(AddPersonEvents.OnAvatarChange(it)) },
         onSavePerson = {
             viewModel.onEvent(AddPersonEvents.OnSavePerson)
             popUp()
@@ -107,7 +107,6 @@ fun AddPersonContent(
     onTimeChange: (String) -> Unit,
     onNoteChange: (String) -> Unit,
     onGenderChange: (String) -> Unit,
-    onAvatarChange: (Int) -> Unit,
     onSavePerson: () -> Unit,
     onAvatarPickerClick: () -> Unit,
     selectedAvatarResId: Int,
@@ -177,7 +176,8 @@ fun AddPersonContent(
             CustomOutlinedTextField(
                 value = uiState.note ?: "",
                 onValueChange = onNoteChange,
-                label = "Note"
+                label = "Note",
+                keyBoardActions = ImeAction.Done
             )
             Spacer(modifier = Modifier.size(16.dp))
             CustomButton(
@@ -287,7 +287,6 @@ fun AddPersonContentPreview() {
             onTimeChange = {},
             onNoteChange = {},
             onGenderChange = {},
-            onAvatarChange = {},
             onSavePerson = {},
             onAvatarPickerClick = {},
             selectedAvatarResId = R.drawable.ic_m1,
