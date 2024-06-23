@@ -7,5 +7,5 @@ data class AddPersonUiState(
     val time: String = "",
     val note: String? = null,
     val gender: String = "",
-    val avatar: String = ""
+    val avatar: Int = 0,
 )
