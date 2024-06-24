@@ -2,7 +2,12 @@
 
 package com.example.rememberme.presentation.addperson
 
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.view.ContextThemeWrapper
+import android.widget.DatePicker
+import android.widget.TimePicker
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -39,7 +44,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -48,6 +55,7 @@ import com.example.rememberme.presentation.common.composables.CustomButton
 import com.example.rememberme.presentation.common.composables.CustomOutlinedTextField
 import com.example.rememberme.ui.theme.RememberMeTheme
 import kotlinx.coroutines.launch
+import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -69,7 +77,6 @@ fun AddPersonScreen(
         onTimeChange = { viewModel.onEvent(AddPersonEvents.OnTimeChange(it)) },
         onNoteChange = { viewModel.onEvent(AddPersonEvents.OnNoteChange(it)) },
         onGenderChange = { viewModel.onEvent(AddPersonEvents.OnGenderChange(it)) },
-        onAvatarChange = { viewModel.onEvent(AddPersonEvents.OnAvatarChange(it)) },
         onSavePerson = {
             viewModel.onEvent(AddPersonEvents.OnSavePerson)
             popUp()
@@ -107,7 +114,6 @@ fun AddPersonContent(
     onTimeChange: (String) -> Unit,
     onNoteChange: (String) -> Unit,
     onGenderChange: (String) -> Unit,
-    onAvatarChange: (Int) -> Unit,
     onSavePerson: () -> Unit,
     onAvatarPickerClick: () -> Unit,
     selectedAvatarResId: Int,
@@ -131,7 +137,7 @@ fun AddPersonContent(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 8.dp)
+                .padding(horizontal = 16.dp)
                 .padding(paddingValues)
         ) {
             CustomOutlinedTextField(
@@ -149,10 +155,9 @@ fun AddPersonContent(
                 onValueChange = onPlaceChange,
                 label = "Meeting Place"
             )
-            CustomOutlinedTextField(
-                value = uiState.time,
-                onValueChange = onTimeChange,
-                label = "Meeting Time"
+            DateTimePicker(
+                initialDateTime = uiState.time,
+                onDateTimeChange = onTimeChange
             )
             GenderRadioButton(
                 selectedGender = uiState.gender,
@@ -177,7 +182,8 @@ fun AddPersonContent(
             CustomOutlinedTextField(
                 value = uiState.note ?: "",
                 onValueChange = onNoteChange,
-                label = "Note"
+                label = "Note",
+                keyBoardActions = ImeAction.Done
             )
             Spacer(modifier = Modifier.size(16.dp))
             CustomButton(
@@ -185,6 +191,50 @@ fun AddPersonContent(
                 text = "Save"
             )
         }
+    }
+}
+
+@Composable
+fun DateTimePicker(
+    initialDateTime: String,
+    onDateTimeChange: (String) -> Unit
+) {
+    val context = LocalContext.current
+    val calendar = Calendar.getInstance()
+    var selectedDateTime by remember { mutableStateOf(initialDateTime) }
+
+    if (selectedDateTime.isEmpty()) {
+        calendar.timeInMillis = System.currentTimeMillis()
+    }
+    // Create a ContextThemeWrapper with your custom theme
+    val datePickerDialogContext = ContextThemeWrapper(context, R.style.Theme_RememberMe)
+    val timePickerDialogContext = ContextThemeWrapper(context, R.style.Theme_RememberMe)
+
+    val datePickerDialog = DatePickerDialog(
+        datePickerDialogContext,
+        { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
+            calendar.set(year, month, dayOfMonth)
+            val timePickerDialog = TimePickerDialog(
+                timePickerDialogContext,
+                { _: TimePicker, hourOfDay: Int, minute: Int ->
+                    calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
+                    calendar.set(Calendar.MINUTE, minute)
+                    selectedDateTime = "${dayOfMonth}/${month + 1}/${year} ${hourOfDay}:${minute}"
+                    onDateTimeChange(selectedDateTime)
+                },
+                calendar.get(Calendar.HOUR_OF_DAY),
+                calendar.get(Calendar.MINUTE),
+                true
+            )
+            timePickerDialog.show()
+        },
+        calendar.get(Calendar.YEAR),
+        calendar.get(Calendar.MONTH),
+        calendar.get(Calendar.DAY_OF_MONTH)
+    )
+
+    OutlinedButton(onClick = { datePickerDialog.show() }) {
+        Text(text = if (selectedDateTime.isEmpty()) "Pick Date & Time" else selectedDateTime)
     }
 }
 
@@ -287,7 +337,6 @@ fun AddPersonContentPreview() {
             onTimeChange = {},
             onNoteChange = {},
             onGenderChange = {},
-            onAvatarChange = {},
             onSavePerson = {},
             onAvatarPickerClick = {},
             selectedAvatarResId = R.drawable.ic_m1,
