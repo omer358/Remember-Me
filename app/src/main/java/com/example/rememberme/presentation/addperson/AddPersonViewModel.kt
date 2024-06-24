@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.rememberme.domain.model.People
+import com.example.rememberme.domain.usecases.add_person.AddPersonUseCases
 import com.example.rememberme.domain.usecases.people.PeopleUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -15,65 +16,104 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddPersonViewModel @Inject constructor(
-    private val peopleUseCases: PeopleUseCases
+    private val peopleUseCases: PeopleUseCases,
+    private val addPersonUseCases: AddPersonUseCases
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(AddPersonUiState())
     val uiState: StateFlow<AddPersonUiState> = _uiState
 
+    private val _isPersonSaved = MutableStateFlow(false)
+    val isPersonSaved: StateFlow<Boolean> = _isPersonSaved
+
     fun onEvent(event: AddPersonEvents) {
         when (event) {
             is AddPersonEvents.OnFirstNameChange -> {
+                Log.i(TAG, "onEvent: OnFirstNameChange -> ${event.firstName}")
                 _uiState.value = _uiState.value.copy(firstName = event.firstName)
             }
 
             is AddPersonEvents.OnSecondNameChange -> {
+                Log.i(TAG, "onEvent: OnSecondNameChange -> ${event.secondName}")
                 _uiState.value = _uiState.value.copy(secondName = event.secondName)
             }
 
             is AddPersonEvents.OnPlaceChange -> {
+                Log.i(TAG, "onEvent: OnPlaceChange -> ${event.place}")
                 _uiState.value = _uiState.value.copy(place = event.place)
             }
 
             is AddPersonEvents.OnTimeChange -> {
+                Log.i(TAG, "onEvent: OnTimeChange -> ${event.time}")
                 _uiState.value = _uiState.value.copy(time = event.time)
             }
 
             is AddPersonEvents.OnNoteChange -> {
+                Log.i(TAG, "onEvent: OnNoteChange -> ${event.note}")
                 _uiState.value = _uiState.value.copy(note = event.note)
             }
 
             is AddPersonEvents.OnGenderChange -> {
+                Log.i(TAG, "onEvent: OnGenderChange -> ${event.gender}")
                 _uiState.value = _uiState.value.copy(gender = event.gender)
             }
 
             is AddPersonEvents.OnAvatarChange -> {
+
                 Log.i(TAG, "onEvent: OnAvatarChange -> ${event.avatar}")
                 _uiState.value = _uiState.value.copy(avatar = event.avatar)
             }
 
             AddPersonEvents.OnSavePerson -> {
+                Log.i(TAG, "onEvent: OnSavePerson")
                 savePerson()
             }
         }
     }
 
     private fun savePerson() {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                val person = People(
-                    firstName = _uiState.value.firstName,
-                    secondName = _uiState.value.secondName,
-                    place = _uiState.value.place,
-                    time = _uiState.value.time,
-                    note = _uiState.value.note,
-                    gender = _uiState.value.gender,
-                    // TODO: get avatar from the ui
-                    avatar = _uiState.value.avatar
-                )
-                peopleUseCases.insertPerson(person)
+        val firstNameResult = addPersonUseCases.validateFirstNameUseCase(_uiState.value.firstName)
+        val secondNameResult =
+            addPersonUseCases.validateSecondNameUseCase(_uiState.value.secondName)
+        val placeResult = addPersonUseCases.validatePlaceUseCase(_uiState.value.place)
+        val timeResult = addPersonUseCases.validateTimeUseCase(_uiState.value.time)
+
+        val hasError = listOf(
+            firstNameResult,
+            secondNameResult,
+            placeResult,
+            timeResult,
+        ).any { !it.successful }
+        if (hasError) {
+            Log.e(TAG, "savePerson: There are some unvalidated inputs")
+            _uiState.value = _uiState.value.copy(
+                firstNameError = firstNameResult.errorMessage,
+                secondNameError = secondNameResult.errorMessage,
+                placeError = placeResult.errorMessage,
+                timeError = timeResult.errorMessage
+            )
+            _isPersonSaved.value = false
+
+        } else {
+            viewModelScope.launch {
+                withContext(Dispatchers.IO) {
+                    Log.i(TAG, "savePerson: ${_uiState.value}")
+                    val person = People(
+                        firstName = _uiState.value.firstName,
+                        secondName = _uiState.value.secondName,
+                        place = _uiState.value.place,
+                        time = _uiState.value.time,
+                        note = _uiState.value.note,
+                        gender = _uiState.value.gender,
+                        avatar = _uiState.value.avatar
+                    )
+                    peopleUseCases.insertPerson(person)
+                }
+                _isPersonSaved.value = true
+
             }
         }
     }
+
     companion object {
         private const val TAG = "AddPersonViewModel"
     }

@@ -1,9 +1,11 @@
 package com.example.rememberme.presentation.common.composables
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -23,22 +25,35 @@ fun CustomOutlinedTextField(
     label: String,
     modifier: Modifier = Modifier,
     maxLine: Int = 1,
-    keyBoardActions: ImeAction = ImeAction.Next
+    keyBoardActions: ImeAction = ImeAction.Next,
+    isError: Boolean,
+    errorText: String? = null
 ) {
-    OutlinedTextField(
-        value = value,
-        onValueChange = onValueChange,
-        label = { Text(label) },
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp),
-        maxLines = maxLine,
-        keyboardOptions = KeyboardOptions(
-            imeAction = keyBoardActions,
-            keyboardType = KeyboardType.Text,
-            capitalization = KeyboardCapitalization.Words
-        ),
-    )
+    Column {
+        OutlinedTextField(
+            value = value,
+            onValueChange = onValueChange,
+            label = { Text(label) },
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp),
+            maxLines = maxLine,
+            keyboardOptions = KeyboardOptions(
+                imeAction = keyBoardActions,
+                keyboardType = KeyboardType.Text,
+                capitalization = KeyboardCapitalization.Words
+            ),
+            isError = isError,
+        )
+        if (isError && errorText != null) {
+            Text(
+                text = errorText,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.padding(start = 16.dp)
+            )
+        }
+    }
 }
 
 @Preview(showBackground = true)
@@ -51,6 +66,8 @@ fun CustomOutlinedTextFieldPreview() {
                 value = "",
                 onValueChange = {},
                 label = "Label",
+                isError = true,
+                errorText = "First Name Can't be null!"
             )
         }
     }

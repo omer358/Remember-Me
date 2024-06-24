@@ -5,6 +5,11 @@ import androidx.room.Room
 import com.example.rememberme.data.PeopleRepositoryImpl
 import com.example.rememberme.data.local.PeopleDatabase
 import com.example.rememberme.domain.repository.PeopleRepository
+import com.example.rememberme.domain.usecases.add_person.AddPersonUseCases
+import com.example.rememberme.domain.usecases.add_person.ValidateFirstNameUseCase
+import com.example.rememberme.domain.usecases.add_person.ValidatePlaceUseCase
+import com.example.rememberme.domain.usecases.add_person.ValidateSecondNameUseCase
+import com.example.rememberme.domain.usecases.add_person.ValidateTimeUseCase
 import com.example.rememberme.domain.usecases.people.GetAllPeople
 import com.example.rememberme.domain.usecases.people.GetPersonById
 import com.example.rememberme.domain.usecases.people.InsertNewPerson
@@ -60,4 +65,14 @@ object AppModule {
         )
     }
 
+    @Provides
+    @Singleton
+    fun provideAddPersonUseCases(): AddPersonUseCases{
+        return AddPersonUseCases(
+            validateFirstNameUseCase = ValidateFirstNameUseCase(),
+            validateSecondNameUseCase = ValidateSecondNameUseCase(),
+            validatePlaceUseCase = ValidatePlaceUseCase(),
+            validateTimeUseCase = ValidateTimeUseCase()
+        )
+    }
 }
