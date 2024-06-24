@@ -64,11 +64,15 @@ fun AddPersonScreen(
     popUp: () -> Unit,
 ) {
     val uiState = viewModel.uiState.collectAsState().value
+    val isPersonSaved by viewModel.isPersonSaved.collectAsState()
+
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
     var showBottomSheet by remember { mutableStateOf(false) }
     var selectedAvatarResId by remember { mutableIntStateOf(R.drawable.ic_m1) }
-
+    if (isPersonSaved) {
+        popUp()
+    }
     AddPersonContent(
         uiState = uiState,
         onFirstNameChange = { viewModel.onEvent(AddPersonEvents.OnFirstNameChange(it)) },
@@ -79,7 +83,7 @@ fun AddPersonScreen(
         onGenderChange = { viewModel.onEvent(AddPersonEvents.OnGenderChange(it)) },
         onSavePerson = {
             viewModel.onEvent(AddPersonEvents.OnSavePerson)
-            popUp()
+
         },
         onAvatarPickerClick = {
             showBottomSheet = true
@@ -143,21 +147,28 @@ fun AddPersonContent(
             CustomOutlinedTextField(
                 value = uiState.firstName,
                 onValueChange = onFirstNameChange,
-                label = "First Name"
+                label = "First Name",
+                isError = uiState.firstNameError != null,
+                errorText = uiState.firstNameError
             )
             CustomOutlinedTextField(
                 value = uiState.secondName,
                 onValueChange = onSecondNameChange,
-                label = "Second Name"
+                label = "Second Name",
+                isError = uiState.secondNameError != null,
+                errorText = uiState.secondNameError
             )
             CustomOutlinedTextField(
                 value = uiState.place,
                 onValueChange = onPlaceChange,
-                label = "Meeting Place"
+                label = "Meeting Place",
+                isError = uiState.placeError != null,
+                errorText = uiState.placeError
             )
             DateTimePicker(
                 initialDateTime = uiState.time,
-                onDateTimeChange = onTimeChange
+                onDateTimeChange = onTimeChange,
+                uiState
             )
             GenderRadioButton(
                 selectedGender = uiState.gender,
@@ -183,7 +194,8 @@ fun AddPersonContent(
                 value = uiState.note ?: "",
                 onValueChange = onNoteChange,
                 label = "Note",
-                keyBoardActions = ImeAction.Done
+                keyBoardActions = ImeAction.Done,
+                isError = false
             )
             Spacer(modifier = Modifier.size(16.dp))
             CustomButton(
@@ -197,7 +209,8 @@ fun AddPersonContent(
 @Composable
 fun DateTimePicker(
     initialDateTime: String,
-    onDateTimeChange: (String) -> Unit
+    onDateTimeChange: (String) -> Unit,
+    uiState: AddPersonUiState
 ) {
     val context = LocalContext.current
     val calendar = Calendar.getInstance()
@@ -233,8 +246,18 @@ fun DateTimePicker(
         calendar.get(Calendar.DAY_OF_MONTH)
     )
 
-    OutlinedButton(onClick = { datePickerDialog.show() }) {
-        Text(text = if (selectedDateTime.isEmpty()) "Pick Date & Time" else selectedDateTime)
+    Column {
+        OutlinedButton(onClick = { datePickerDialog.show() }) {
+            Text(text = selectedDateTime.ifEmpty { "Pick Date & Time" })
+        }
+        if (uiState.timeError != null) {
+            Text(
+                text = uiState.timeError,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.padding(start = 16.dp)
+            )
+        }
     }
 }
 
