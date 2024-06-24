@@ -2,6 +2,7 @@ package com.example.rememberme.presentation.common.composables
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Surface
@@ -23,8 +24,11 @@ fun CustomButton(
         modifier = modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
+            .height(50.dp)
     ) {
-        Text(text)
+        Text(
+            text,
+        )
     }
 }
 

@@ -9,7 +9,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.OffsetMapping
+import androidx.compose.ui.text.input.TransformedText
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.rememberme.ui.theme.RememberMeTheme
@@ -23,6 +28,14 @@ fun CustomOutlinedTextField(
     maxLine: Int = 1,
     keyBoardActions: ImeAction = ImeAction.Next
 ) {
+    val capitalizeFirstLetterTransformation = VisualTransformation { text ->
+        val capitalizedText = if (text.text.isNotEmpty()) {
+            text.text[0].uppercaseChar() + text.text.substring(1)
+        } else {
+            text.text
+        }
+        TransformedText(AnnotatedString(capitalizedText), OffsetMapping.Identity)
+    }
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
@@ -32,8 +45,10 @@ fun CustomOutlinedTextField(
             .padding(vertical = 4.dp),
         maxLines = maxLine,
         keyboardOptions = KeyboardOptions(
-            imeAction = keyBoardActions
-        )
+            imeAction = keyBoardActions,
+            keyboardType = KeyboardType.Text
+        ),
+        visualTransformation = capitalizeFirstLetterTransformation
     )
 }
 
