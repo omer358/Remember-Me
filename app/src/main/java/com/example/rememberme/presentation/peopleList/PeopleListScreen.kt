@@ -26,6 +26,7 @@ import com.example.rememberme.R
 import com.example.rememberme.data.FakeDataSource
 import com.example.rememberme.domain.model.People
 import com.example.rememberme.presentation.common.composables.PeopleListItem
+import com.example.rememberme.presentation.peopleList.composable.EmptyStateScreen
 import com.example.rememberme.ui.theme.RememberMeTheme
 
 @Composable
@@ -33,7 +34,7 @@ fun PeopleScreen(
     modifier: Modifier = Modifier,
     viewModel: PeopleViewModel = hiltViewModel(),
     navigateToDetailScreen: (Long) -> Unit,
-    navigateToAddNewPersonScreen:() -> Unit
+    navigateToAddNewPersonScreen: () -> Unit
 ) {
     val people = viewModel.people.collectAsState(initial = emptyList())
     PeopleScreenContent(people, modifier, navigateToDetailScreen, navigateToAddNewPersonScreen)
@@ -69,16 +70,20 @@ fun PeopleScreenContent(
             }
         }
     ) { it ->
-        LazyColumn(
-            modifier = modifier
-                .padding(it)
-                .fillMaxSize()
-                .testTag("PeopleListScreen")
-        ) {
-            items(count = peopleState.value.size) { index ->
-                PeopleListItem(peopleState.value[index], { personId ->
-                    navigateToDetailScreen(personId)
-                })
+        if (peopleState.value.isEmpty()) {
+            EmptyStateScreen(modifier = modifier.padding(paddingValues = it))
+        } else {
+            LazyColumn(
+                modifier = modifier
+                    .padding(it)
+                    .fillMaxSize()
+                    .testTag("PeopleListScreen")
+            ) {
+                items(count = peopleState.value.size) { index ->
+                    PeopleListItem(peopleState.value[index], { personId ->
+                        navigateToDetailScreen(personId)
+                    })
+                }
             }
         }
     }
