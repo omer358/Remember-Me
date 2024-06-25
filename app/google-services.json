@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "567382024079",
+    "project_id": "remember-me-bcd80",
+    "storage_bucket": "remember-me-bcd80.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:567382024079:android:797e9faec882ed07ec75fa",
+        "android_client_info": {
+          "package_name": "com.example.rememberme"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBLLhJ9ymIEvsinNLYSr4lXdhO5mv0NMIE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

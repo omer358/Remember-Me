@@ -7,6 +7,7 @@ import com.example.rememberme.data.local.PeopleDatabase
 import com.example.rememberme.domain.repository.PeopleRepository
 import com.example.rememberme.domain.usecases.add_person.AddPersonUseCases
 import com.example.rememberme.domain.usecases.add_person.ValidateFirstNameUseCase
+import com.example.rememberme.domain.usecases.add_person.ValidateGenderSelectionUseCase
 import com.example.rememberme.domain.usecases.add_person.ValidatePlaceUseCase
 import com.example.rememberme.domain.usecases.add_person.ValidateSecondNameUseCase
 import com.example.rememberme.domain.usecases.add_person.ValidateTimeUseCase
@@ -72,7 +73,8 @@ object AppModule {
             validateFirstNameUseCase = ValidateFirstNameUseCase(),
             validateSecondNameUseCase = ValidateSecondNameUseCase(),
             validatePlaceUseCase = ValidatePlaceUseCase(),
-            validateTimeUseCase = ValidateTimeUseCase()
+            validateTimeUseCase = ValidateTimeUseCase(),
+            validateGenderSelectionUseCase = ValidateGenderSelectionUseCase()
         )
     }
 }

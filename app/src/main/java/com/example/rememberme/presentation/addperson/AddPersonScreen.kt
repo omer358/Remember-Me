@@ -1,14 +1,16 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
+@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
 
 package com.example.rememberme.presentation.addperson
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.util.Log
 import android.view.ContextThemeWrapper
 import android.widget.DatePicker
 import android.widget.TimePicker
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,6 +22,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -52,12 +56,14 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.rememberme.R
 import com.example.rememberme.presentation.common.composables.CustomButton
+import com.example.rememberme.presentation.common.composables.CustomErrorText
 import com.example.rememberme.presentation.common.composables.CustomOutlinedTextField
 import com.example.rememberme.ui.theme.RememberMeTheme
 import kotlinx.coroutines.launch
 import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
+private const val TAG = "AddPersonScreen"
 @Composable
 fun AddPersonScreen(
     viewModel: AddPersonViewModel = hiltViewModel(),
@@ -90,7 +96,7 @@ fun AddPersonScreen(
             scope.launch { sheetState.show() }
         },
         selectedAvatarResId = selectedAvatarResId,
-        popUp = popUp
+        popUp = popUp,
     )
 
     if (showBottomSheet) {
@@ -121,7 +127,8 @@ fun AddPersonContent(
     onSavePerson: () -> Unit,
     onAvatarPickerClick: () -> Unit,
     selectedAvatarResId: Int,
-    popUp: () -> Unit
+    popUp: () -> Unit,
+    scrollState: ScrollState = rememberScrollState()
 ) {
     Scaffold(
         topBar = {
@@ -143,6 +150,7 @@ fun AddPersonContent(
                 .fillMaxSize()
                 .padding(horizontal = 16.dp)
                 .padding(paddingValues)
+                .verticalScroll(scrollState)
         ) {
             CustomOutlinedTextField(
                 value = uiState.firstName,
@@ -172,6 +180,7 @@ fun AddPersonContent(
             )
             GenderRadioButton(
                 selectedGender = uiState.gender,
+                errorMessage = uiState.genderError,
                 onGenderSelected = onGenderChange
             )
             Row(
@@ -323,8 +332,10 @@ fun AvatarPicker(
 fun GenderRadioButton(
     selectedGender: String,
     onGenderSelected: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    errorMessage: String?
 ) {
+    Log.d(TAG, "GenderRadioButton: $errorMessage")
     val genderOptions = listOf("Male", "Female")
     Column(modifier = modifier) {
         Text("Gender", modifier = Modifier.padding(bottom = 4.dp))
@@ -343,6 +354,9 @@ fun GenderRadioButton(
                     Text(text = gender, modifier = Modifier.padding(start = 4.dp))
                 }
             }
+        }
+        if (errorMessage != null) {
+            CustomErrorText(errorText = errorMessage)
         }
     }
 }
@@ -363,7 +377,7 @@ fun AddPersonContentPreview() {
             onSavePerson = {},
             onAvatarPickerClick = {},
             selectedAvatarResId = R.drawable.ic_m1,
-            popUp = {}
+            popUp = {},
         )
     }
 }

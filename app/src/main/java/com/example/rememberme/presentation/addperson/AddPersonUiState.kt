@@ -13,5 +13,6 @@ data class AddPersonUiState(
     val timeError: String? = null,
     val note: String? = null,
     val gender: String = "",
+    val genderError: String? = null,
     val avatar: Int = R.drawable.ic_f1,
 )
