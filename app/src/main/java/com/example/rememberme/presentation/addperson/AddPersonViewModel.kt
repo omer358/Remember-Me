@@ -29,17 +29,17 @@ class AddPersonViewModel @Inject constructor(
         when (event) {
             is AddPersonEvents.OnFirstNameChange -> {
                 Log.i(TAG, "onEvent: OnFirstNameChange -> ${event.firstName}")
-                _uiState.value = _uiState.value.copy(firstName = event.firstName)
+                _uiState.value = _uiState.value.copy(firstName = event.firstName, firstNameError = null)
             }
 
             is AddPersonEvents.OnSecondNameChange -> {
                 Log.i(TAG, "onEvent: OnSecondNameChange -> ${event.secondName}")
-                _uiState.value = _uiState.value.copy(secondName = event.secondName)
+                _uiState.value = _uiState.value.copy(secondName = event.secondName, secondNameError = null)
             }
 
             is AddPersonEvents.OnPlaceChange -> {
                 Log.i(TAG, "onEvent: OnPlaceChange -> ${event.place}")
-                _uiState.value = _uiState.value.copy(place = event.place)
+                _uiState.value = _uiState.value.copy(place = event.place, placeError = null)
             }
 
             is AddPersonEvents.OnTimeChange -> {
@@ -54,7 +54,7 @@ class AddPersonViewModel @Inject constructor(
 
             is AddPersonEvents.OnGenderChange -> {
                 Log.i(TAG, "onEvent: OnGenderChange -> ${event.gender}")
-                _uiState.value = _uiState.value.copy(gender = event.gender)
+                _uiState.value = _uiState.value.copy(gender = event.gender, genderError = null)
             }
 
             is AddPersonEvents.OnAvatarChange -> {
@@ -76,20 +76,24 @@ class AddPersonViewModel @Inject constructor(
             addPersonUseCases.validateSecondNameUseCase(_uiState.value.secondName)
         val placeResult = addPersonUseCases.validatePlaceUseCase(_uiState.value.place)
         val timeResult = addPersonUseCases.validateTimeUseCase(_uiState.value.time)
-
+        val genderResult = addPersonUseCases.validateGenderSelectionUseCase(_uiState.value.gender)
+        Log.d(TAG, "savePerson: $genderResult")
         val hasError = listOf(
             firstNameResult,
             secondNameResult,
             placeResult,
             timeResult,
+            genderResult
         ).any { !it.successful }
         if (hasError) {
             Log.e(TAG, "savePerson: There are some unvalidated inputs")
+            Log.e(TAG, "savePerson: ${_uiState.value}")
             _uiState.value = _uiState.value.copy(
                 firstNameError = firstNameResult.errorMessage,
                 secondNameError = secondNameResult.errorMessage,
                 placeError = placeResult.errorMessage,
-                timeError = timeResult.errorMessage
+                timeError = timeResult.errorMessage,
+                genderError = genderResult.errorMessage
             )
             _isPersonSaved.value = false
 

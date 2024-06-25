@@ -4,5 +4,6 @@ data class AddPersonUseCases(
     val validateFirstNameUseCase: ValidateFirstNameUseCase,
     val validateSecondNameUseCase: ValidateSecondNameUseCase,
     val validatePlaceUseCase: ValidatePlaceUseCase,
-    val validateTimeUseCase: ValidateTimeUseCase
+    val validateTimeUseCase: ValidateTimeUseCase,
+    val validateGenderSelectionUseCase: ValidateGenderSelectionUseCase
 )
