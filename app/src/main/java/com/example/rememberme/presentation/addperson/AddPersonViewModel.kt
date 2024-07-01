@@ -29,12 +29,14 @@ class AddPersonViewModel @Inject constructor(
         when (event) {
             is AddPersonEvents.OnFirstNameChange -> {
                 Log.i(TAG, "onEvent: OnFirstNameChange -> ${event.firstName}")
-                _uiState.value = _uiState.value.copy(firstName = event.firstName, firstNameError = null)
+                _uiState.value =
+                    _uiState.value.copy(firstName = event.firstName, firstNameError = null)
             }
 
             is AddPersonEvents.OnSecondNameChange -> {
                 Log.i(TAG, "onEvent: OnSecondNameChange -> ${event.secondName}")
-                _uiState.value = _uiState.value.copy(secondName = event.secondName, secondNameError = null)
+                _uiState.value =
+                    _uiState.value.copy(secondName = event.secondName, secondNameError = null)
             }
 
             is AddPersonEvents.OnPlaceChange -> {
@@ -68,6 +70,36 @@ class AddPersonViewModel @Inject constructor(
                 savePerson()
             }
         }
+    }
+
+    fun loadPersonDetails(personId: Long) {
+        Log.i(TAG, "loadPersonDetails: $personId")
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                val person = peopleUseCases.getPersonById(personId)
+                person.collect { person ->
+                    if (person != null) {
+                        Log.i(TAG, "loadPersonDetails: $person")
+                        _uiState.value = _uiState.value.copy(
+                            firstName = person.firstName,
+                            secondName = person.secondName,
+                            place = person.place,
+                            gender = person.gender,
+                            avatar = person.avatar,
+                            time = person.time,
+                            note = person.note,
+                        )
+                        Log.i(TAG, "loadPersonDetails: ${_uiState.value}")
+                    }
+                }
+            }
+        }
+    }
+
+
+    fun resetForm() {
+        Log.i(TAG, "resetForm: ")
+        _uiState.value = AddPersonUiState()
     }
 
     private fun savePerson() {

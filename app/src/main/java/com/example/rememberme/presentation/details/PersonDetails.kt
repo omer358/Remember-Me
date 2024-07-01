@@ -8,6 +8,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,12 +21,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonColors
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,7 +36,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -53,7 +53,8 @@ private const val TAG = "PersonDetails"
 fun PersonDetailsScreen(
     viewModel: PersonDetailsViewModel = hiltViewModel(),
     personId: Long,
-    navigateUp: () -> Unit
+    navigateUp: () -> Unit,
+    navigateToEditScreen: (Long?) -> Unit
 ) {
     val uiState = viewModel.uiState.collectAsStateWithLifecycle()
     val coroutineScope = rememberCoroutineScope()
@@ -75,7 +76,7 @@ fun PersonDetailsScreen(
         }
         uiState.value.person != null -> {
             Log.d(TAG, "PersonDetailsScreen: ${uiState.value.person}")
-            PersonDetailsContent(uiState.value.person!!, navigateUp)
+            PersonDetailsContent(uiState.value.person!!, navigateUp, navigateToEditScreen)
         }
         else -> {
             Log.e(TAG, "PersonDetailsScreen: Person not found")
@@ -118,6 +119,7 @@ fun LoadingIndicator() {
 fun PersonDetailsContent(
     person: People,
     navigateUp: () -> Unit,
+    navigateToEditScreen: (Long?) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val scrollState = rememberScrollState()
@@ -143,24 +145,38 @@ fun PersonDetailsContent(
                     .height(200.dp)
 
             ) {
-                IconButton(
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .align(Alignment.TopStart)
-                        .padding(top = 16.dp, start = 8.dp),
-                    colors = IconButtonColors(
-                        contentColor = MaterialTheme.colorScheme.onPrimary,
-                        disabledContentColor = MaterialTheme.colorScheme.onPrimary,
-                        containerColor = Color.Transparent,
-                        disabledContainerColor = Color.Transparent
-                    ),
-                    onClick = {
-                        Log.d(TAG, "PersonDetailsContent: Clicked")
-                        navigateUp()
-                    }) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                        contentDescription = null
-                    )
+                        .fillMaxWidth()
+                        .padding(top = 26.dp, start = 4.dp),
+                ) {
+                    IconButton(
+                        onClick = {
+                            Log.d(TAG, "PersonDetailsContent: Back arrow Clicked!")
+                            navigateUp()
+                        }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onPrimary
+                        )
+                    }
+                    Row {
+                        IconButton(onClick = {
+                            Log.d(TAG, "PersonDetailsContent: Edit Person Clicked, navigating to edit screen with personId: ${person.id}")
+                            navigateToEditScreen(person.id)
+                        }) {
+                            Icon(
+                                imageVector = Icons.Default.Edit,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onPrimary
+                            )
+                        }
+                    }
+
                 }
             }
             Box(
@@ -252,7 +268,8 @@ fun PersonDetailsContentPreview() {
             ),
             navigateUp = {
                 Log.d(TAG, "PersonDetailsContentPreview: Clicked")
-            }
+            },
+            navigateToEditScreen = {}
         )
     }
 }

@@ -39,6 +39,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -62,12 +63,14 @@ import com.example.rememberme.ui.theme.RememberMeTheme
 import kotlinx.coroutines.launch
 import java.util.Calendar
 
-@OptIn(ExperimentalMaterial3Api::class)
 private const val TAG = "AddPersonScreen"
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddPersonScreen(
     viewModel: AddPersonViewModel = hiltViewModel(),
     popUp: () -> Unit,
+    personId: Long?
 ) {
     val uiState = viewModel.uiState.collectAsState().value
     val isPersonSaved by viewModel.isPersonSaved.collectAsState()
@@ -75,9 +78,25 @@ fun AddPersonScreen(
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
     var showBottomSheet by remember { mutableStateOf(false) }
-    var selectedAvatarResId by remember { mutableIntStateOf(R.drawable.ic_m1) }
+    var selectedAvatarResId by remember {
+        if (personId == null) {
+            Log.i(TAG, "AddPersonScreen: Person is null")
+            mutableIntStateOf(R.drawable.ic_m1)
+        } else {
+            Log.i(TAG, "AddPersonScreen: Person is not null")
+            mutableIntStateOf(uiState.avatar)
+        }
+    }
     if (isPersonSaved) {
         popUp()
+    }
+
+    LaunchedEffect(personId) {
+        if (personId != null) {
+            viewModel.loadPersonDetails(personId)
+        } else {
+            viewModel.resetForm()
+        }
     }
     AddPersonContent(
         uiState = uiState,
@@ -190,6 +209,7 @@ fun AddPersonContent(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                Log.i(TAG, "AddPersonContent: $selectedAvatarResId")
                 Image(
                     painter = painterResource(id = selectedAvatarResId),
                     contentDescription = null,
