@@ -72,7 +72,7 @@ fun AddPersonScreen(
     popUp: () -> Unit,
     personId: Long?
 ) {
-    val uiState = viewModel.uiState.collectAsState().value
+    val uiState by viewModel.uiState.collectAsState()
     val isPersonSaved by viewModel.isPersonSaved.collectAsState()
 
     val sheetState = rememberModalBottomSheetState()
@@ -93,8 +93,10 @@ fun AddPersonScreen(
 
     LaunchedEffect(personId) {
         if (personId != null) {
+            Log.i(TAG,"LoadPersonDetails on the addPerson screen")
             viewModel.loadPersonDetails(personId)
         } else {
+            Log.i(TAG,"creating new person screen")
             viewModel.resetForm()
         }
     }
@@ -209,7 +211,6 @@ fun AddPersonContent(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Log.i(TAG, "AddPersonContent: $selectedAvatarResId")
                 Image(
                     painter = painterResource(id = selectedAvatarResId),
                     contentDescription = null,
@@ -229,11 +230,12 @@ fun AddPersonContent(
             Spacer(modifier = Modifier.size(16.dp))
             CustomButton(
                 onClick = onSavePerson,
-                text = "Save"
+                text = if (uiState.id != null) "Update" else "Save"
             )
         }
     }
 }
+
 
 @Composable
 fun DateTimePicker(
