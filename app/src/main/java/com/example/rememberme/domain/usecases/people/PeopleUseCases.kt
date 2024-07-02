@@ -4,5 +4,7 @@ data class PeopleUseCases(
     val getAllPeople: GetAllPeople,
     val getPersonById: GetPersonById,
     val insertPerson: InsertNewPerson,
-    val updatePerson: UpdatePerson
+    val updatePerson: UpdatePerson,
+    val deletePersonById: DeletePersonById
+
 )

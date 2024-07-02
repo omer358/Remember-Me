@@ -11,6 +11,7 @@ import com.example.rememberme.domain.usecases.add_person.ValidateGenderSelection
 import com.example.rememberme.domain.usecases.add_person.ValidatePlaceUseCase
 import com.example.rememberme.domain.usecases.add_person.ValidateSecondNameUseCase
 import com.example.rememberme.domain.usecases.add_person.ValidateTimeUseCase
+import com.example.rememberme.domain.usecases.people.DeletePersonById
 import com.example.rememberme.domain.usecases.people.GetAllPeople
 import com.example.rememberme.domain.usecases.people.GetPersonById
 import com.example.rememberme.domain.usecases.people.InsertNewPerson
@@ -64,7 +65,8 @@ object AppModule {
             getAllPeople = GetAllPeople(peopleRepository),
             getPersonById = GetPersonById(peopleRepository),
             insertPerson = InsertNewPerson(peopleRepository),
-            updatePerson = UpdatePerson(peopleRepository)
+            updatePerson = UpdatePerson(peopleRepository),
+            deletePersonById = DeletePersonById(peopleRepository)
         )
     }
 

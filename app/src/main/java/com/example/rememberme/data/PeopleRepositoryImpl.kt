@@ -16,8 +16,8 @@ class PeopleRepositoryImpl(
         peopleDao.insert(people)
     }
 
-    override suspend fun deletePeople(people: People) {
-        peopleDao.removePerson(people.id)
+    override suspend fun deletePersonById(personId: Long) {
+        peopleDao.removePerson(personId)
     }
 
     override suspend fun updatePeople(people: People) {
