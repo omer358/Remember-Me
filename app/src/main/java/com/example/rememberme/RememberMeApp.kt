@@ -18,7 +18,9 @@ fun RememberMeApp() {
         Surface(
             modifier = Modifier.fillMaxSize(),
         ) {
-                NavGraph(startDestination = Routes.PeopleNavigation.route)
+            NavGraph(
+                startDestination = Routes.PeopleNavigation.route
+            )
         }
     }
 }

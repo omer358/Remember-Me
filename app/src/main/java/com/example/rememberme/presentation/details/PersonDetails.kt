@@ -21,6 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Card
@@ -76,7 +77,12 @@ fun PersonDetailsScreen(
         }
         uiState.value.person != null -> {
             Log.d(TAG, "PersonDetailsScreen: ${uiState.value.person}")
-            PersonDetailsContent(uiState.value.person!!, navigateUp, navigateToEditScreen)
+            PersonDetailsContent(
+                uiState.value.person!!,
+                navigateUp,
+                navigateToEditScreen,
+                onDeletePerson = {viewModel.onEvent(PersonDetailsEvent.DeletePerson)}
+            )
         }
         else -> {
             Log.e(TAG, "PersonDetailsScreen: Person not found")
@@ -120,6 +126,7 @@ fun PersonDetailsContent(
     person: People,
     navigateUp: () -> Unit,
     navigateToEditScreen: (Long?) -> Unit,
+    onDeletePerson: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val scrollState = rememberScrollState()
@@ -171,6 +178,17 @@ fun PersonDetailsContent(
                         }) {
                             Icon(
                                 imageVector = Icons.Default.Edit,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onPrimary
+                            )
+                        }
+                        IconButton(onClick = {
+                            Log.d(TAG, "PersonDetailsContent: Delete Person Clicked, Deleting person with personId: ${person.id}")
+                            onDeletePerson()
+                            navigateUp()
+                        }) {
+                            Icon(
+                                imageVector = Icons.Filled.Delete,
                                 contentDescription = null,
                                 tint = MaterialTheme.colorScheme.onPrimary
                             )
@@ -269,7 +287,8 @@ fun PersonDetailsContentPreview() {
             navigateUp = {
                 Log.d(TAG, "PersonDetailsContentPreview: Clicked")
             },
-            navigateToEditScreen = {}
+            navigateToEditScreen = {},
+            onDeletePerson = {}
         )
     }
 }
