@@ -40,7 +40,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -55,6 +54,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.rememberme.R
 import com.example.rememberme.presentation.common.composables.CustomButton
 import com.example.rememberme.presentation.common.composables.CustomErrorText
@@ -72,8 +72,8 @@ fun AddPersonScreen(
     popUp: () -> Unit,
     personId: Long?
 ) {
-    val uiState by viewModel.uiState.collectAsState()
-    val isPersonSaved by viewModel.isPersonSaved.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val isPersonSaved by viewModel.isPersonSaved.collectAsStateWithLifecycle()
 
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
@@ -195,9 +195,8 @@ fun AddPersonContent(
                 errorText = uiState.placeError
             )
             DateTimePicker(
-                initialDateTime = uiState.time,
+                uiState = uiState,
                 onDateTimeChange = onTimeChange,
-                uiState
             )
             GenderRadioButton(
                 selectedGender = uiState.gender,
@@ -239,15 +238,16 @@ fun AddPersonContent(
 
 @Composable
 fun DateTimePicker(
-    initialDateTime: String,
+    uiState: AddPersonUiState,
     onDateTimeChange: (String) -> Unit,
-    uiState: AddPersonUiState
 ) {
     val context = LocalContext.current
     val calendar = Calendar.getInstance()
-    var selectedDateTime by remember { mutableStateOf(initialDateTime) }
+    val selectedDateTime = remember { mutableStateOf("") }
+    selectedDateTime.value = uiState.time
+    Log.i(TAG,"currentDate from the UiState: ${uiState.time}")
 
-    if (selectedDateTime.isEmpty()) {
+    if (uiState.time.isBlank()) {
         calendar.timeInMillis = System.currentTimeMillis()
     }
     // Create a ContextThemeWrapper with your custom theme
@@ -263,8 +263,8 @@ fun DateTimePicker(
                 { _: TimePicker, hourOfDay: Int, minute: Int ->
                     calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
                     calendar.set(Calendar.MINUTE, minute)
-                    selectedDateTime = "${dayOfMonth}/${month + 1}/${year} ${hourOfDay}:${minute}"
-                    onDateTimeChange(selectedDateTime)
+                    selectedDateTime.value = "${dayOfMonth}/${month + 1}/${year} ${hourOfDay}:${minute}"
+                    onDateTimeChange(selectedDateTime.value)
                 },
                 calendar.get(Calendar.HOUR_OF_DAY),
                 calendar.get(Calendar.MINUTE),
@@ -279,7 +279,11 @@ fun DateTimePicker(
 
     Column {
         OutlinedButton(onClick = { datePickerDialog.show() }) {
-            Text(text = selectedDateTime.ifEmpty { "Pick Date & Time" })
+            if(selectedDateTime.value.isEmpty()) {
+                Text(text = "Pick Date & Time")
+            }else{
+                Text(text = uiState.time)
+            }
         }
         if (uiState.timeError != null) {
             Text(
@@ -357,7 +361,7 @@ fun GenderRadioButton(
     modifier: Modifier = Modifier,
     errorMessage: String?
 ) {
-    Log.d(TAG, "GenderRadioButton: $errorMessage")
+    Log.d(TAG, "GenderRadioButtonError: $errorMessage")
     val genderOptions = listOf("Male", "Female")
     Column(modifier = modifier) {
         Text("Gender", modifier = Modifier.padding(bottom = 4.dp))
