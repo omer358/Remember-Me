@@ -50,10 +50,6 @@ class PersonDetailsViewModel @Inject constructor(
         }
     }
 
-    private fun navigateUp() {
-
-    }
-
     private fun editPerson() {
 
     }
