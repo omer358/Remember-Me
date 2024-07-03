@@ -19,5 +19,4 @@ data class People (
     override fun toString(): String {
         return "$firstName $secondName"
     }
-
 }
