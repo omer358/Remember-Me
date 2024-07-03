@@ -1,8 +1,7 @@
 package com.example.rememberme.domain.usecases.add_person
 
 data class AddPersonUseCases(
-    val validateFirstNameUseCase: ValidateFirstNameUseCase,
-    val validateSecondNameUseCase: ValidateSecondNameUseCase,
+    val validateNamesUseCase: ValidateNamesUseCase,
     val validatePlaceUseCase: ValidatePlaceUseCase,
     val validateTimeUseCase: ValidateTimeUseCase,
     val validateGenderSelectionUseCase: ValidateGenderSelectionUseCase

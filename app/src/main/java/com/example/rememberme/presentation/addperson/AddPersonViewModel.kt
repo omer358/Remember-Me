@@ -131,9 +131,9 @@ class AddPersonViewModel @Inject constructor(
     }
 
     private fun validateInput(): Boolean {
-        val firstNameResult = addPersonUseCases.validateFirstNameUseCase(_uiState.value.firstName)
+        val firstNameResult = addPersonUseCases.validateNamesUseCase(_uiState.value.firstName)
         val secondNameResult =
-            addPersonUseCases.validateSecondNameUseCase(_uiState.value.secondName)
+            addPersonUseCases.validateNamesUseCase(_uiState.value.secondName)
         val placeResult = addPersonUseCases.validatePlaceUseCase(_uiState.value.place)
         val timeResult = addPersonUseCases.validateTimeUseCase(_uiState.value.time)
         val genderResult = addPersonUseCases.validateGenderSelectionUseCase(_uiState.value.gender)
