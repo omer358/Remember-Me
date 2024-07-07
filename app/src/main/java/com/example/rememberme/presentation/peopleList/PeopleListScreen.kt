@@ -1,6 +1,5 @@
 package com.example.rememberme.presentation.peopleList
 
-import android.content.res.Configuration
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -15,19 +14,14 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.rememberme.R
-import com.example.rememberme.data.FakeDataSource
 import com.example.rememberme.domain.model.People
 import com.example.rememberme.presentation.common.composables.PeopleListItem
 import com.example.rememberme.presentation.peopleList.composable.EmptyStateScreen
-import com.example.rememberme.ui.theme.RememberMeTheme
 
 @Composable
 fun PeopleScreen(
@@ -89,19 +83,19 @@ fun PeopleScreenContent(
     }
 }
 
-@Preview(showBackground = true)
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun PeopleScreenContentPreview() {
-    RememberMeTheme {
-        PeopleScreenContent(
-            peopleState = remember {
-                mutableStateOf(FakeDataSource.getPeopleList())
-            },
-            navigateToDetailScreen = {},
-            navigateToAddNewPersonScreen = {}
-        )
-    }
-}
+//@Preview(showBackground = true)
+//@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+//@Composable
+//fun PeopleScreenContentPreview() {
+//    RememberMeTheme {
+//        PeopleScreenContent(
+//            peopleState = remember {
+////                mutableStateOf(FakeDataSource.getPeopleList())
+//            },
+//            navigateToDetailScreen = {},
+//            navigateToAddNewPersonScreen = {}
+//        )
+//    }
+//}
 
 
