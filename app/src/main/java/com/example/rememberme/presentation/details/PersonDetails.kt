@@ -25,7 +25,6 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -45,6 +44,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.rememberme.R
 import com.example.rememberme.domain.model.People
+import com.example.rememberme.presentation.common.composables.LoadingStateScreen
 import com.example.rememberme.ui.theme.RememberMeTheme
 import kotlinx.coroutines.launch
 
@@ -68,7 +68,7 @@ fun PersonDetailsScreen(
     }
     when {
         uiState.value.isLoading -> {
-            LoadingIndicator()
+            LoadingStateScreen()
             Log.d(TAG, "PersonDetailsScreen: Loading")
         }
         uiState.value.error != null -> {
@@ -104,20 +104,6 @@ fun ErrorContent(error: String) {
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(text = error, style = MaterialTheme.typography.headlineLarge)
-    }
-}
-
-@Composable
-fun LoadingIndicator() {
-    // TODO: Implement a custom Loading animation in the future
-    Column (
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ){
-        CircularProgressIndicator()
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(text = "Loading...")
     }
 }
 
@@ -292,13 +278,3 @@ fun PersonDetailsContentPreview() {
         )
     }
 }
-
-@Preview(showBackground = true)
-@Preview(uiMode = UI_MODE_NIGHT_YES)
-@Composable
-fun LoadingIndicatorContentPreview() {
-    RememberMeTheme {
-        LoadingIndicator()
-    }
-}
-

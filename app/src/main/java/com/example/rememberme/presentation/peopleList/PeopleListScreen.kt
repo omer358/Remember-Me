@@ -12,17 +12,18 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.rememberme.R
 import com.example.rememberme.domain.model.People
 import com.example.rememberme.presentation.common.composables.PeopleListItem
 import com.example.rememberme.presentation.peopleList.composable.EmptyStateScreen
 
+private const val TAG = "PeopleListScreen"
 @Composable
 fun PeopleScreen(
     modifier: Modifier = Modifier,
@@ -30,14 +31,14 @@ fun PeopleScreen(
     navigateToDetailScreen: (Long) -> Unit,
     navigateToAddNewPersonScreen: () -> Unit
 ) {
-    val people = viewModel.people.collectAsState(initial = emptyList())
-    PeopleScreenContent(people, modifier, navigateToDetailScreen, navigateToAddNewPersonScreen)
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    PeopleScreenContent(state, modifier, navigateToDetailScreen, navigateToAddNewPersonScreen)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PeopleScreenContent(
-    peopleState: State<List<People>>,
+    state: PeopleState,
     modifier: Modifier = Modifier,
     navigateToDetailScreen: (Long) -> Unit,
     navigateToAddNewPersonScreen: () -> Unit
@@ -77,6 +78,22 @@ fun PeopleScreenContent(
                     PeopleListItem(peopleState.value[index], { personId ->
                         navigateToDetailScreen(personId)
                     })
+            Log.d(TAG, "PeopleScreenContent: ${state.people}")
+            if (state.people.isEmpty()) {
+                Log.d(TAG, "PeopleScreenContent: Empty")
+                EmptyStateScreen(modifier = modifier.padding(paddingValues = it))
+            } else {
+                Log.d(TAG, "PeopleScreenContent: ${state.people}")
+                LazyColumn(
+                    modifier = modifier
+                        .padding(it)
+                        .fillMaxSize()
+                        .testTag("PeopleListScreen")
+                ) {
+                    items(count = state.people.size) { index ->
+                        PeopleListItem(state.people[index], { personId ->
+                            navigateToDetailScreen(personId)
+                        })
                 }
             }
         }
