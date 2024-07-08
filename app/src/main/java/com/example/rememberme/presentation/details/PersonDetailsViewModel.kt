@@ -55,7 +55,7 @@ class PersonDetailsViewModel @Inject constructor(
     private fun deletePerson() {
         viewModelScope.launch {
             try {
-                Log.d(TAG, "Deleting person with ID: ${_uiState.value.person!!.id}")
+                Log.d(TAG, "Deleting person with= ID: ${_uiState.value.person!!.id}")
                 peopleUseCases.deletePersonById(_uiState.value.person!!.id)
                 _uiState.update { PersonDetailsUiState() } // Clear UI state after deletion
             } catch (e: Exception) {
