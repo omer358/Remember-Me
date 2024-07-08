@@ -113,5 +113,11 @@ dependencies {
     testImplementation(libs.kotlinx.coroutines.test)
 
     // Firebase Bom
-    implementation(libs.firebase.bom)
+    implementation(platform(libs.firebase.bom))
+
+    // Robolectric
+    testImplementation(libs.robolectric)
+
+    // Lottie
+    implementation(libs.lottie.compose)
 }

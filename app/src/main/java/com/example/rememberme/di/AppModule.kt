@@ -6,10 +6,9 @@ import com.example.rememberme.data.PeopleRepositoryImpl
 import com.example.rememberme.data.local.PeopleDatabase
 import com.example.rememberme.domain.repository.PeopleRepository
 import com.example.rememberme.domain.usecases.add_person.AddPersonUseCases
-import com.example.rememberme.domain.usecases.add_person.ValidateFirstNameUseCase
 import com.example.rememberme.domain.usecases.add_person.ValidateGenderSelectionUseCase
+import com.example.rememberme.domain.usecases.add_person.ValidateNamesUseCase
 import com.example.rememberme.domain.usecases.add_person.ValidatePlaceUseCase
-import com.example.rememberme.domain.usecases.add_person.ValidateSecondNameUseCase
 import com.example.rememberme.domain.usecases.add_person.ValidateTimeUseCase
 import com.example.rememberme.domain.usecases.people.DeletePersonById
 import com.example.rememberme.domain.usecases.people.GetAllPeople
@@ -74,8 +73,7 @@ object AppModule {
     @Singleton
     fun provideAddPersonUseCases(): AddPersonUseCases{
         return AddPersonUseCases(
-            validateFirstNameUseCase = ValidateFirstNameUseCase(),
-            validateSecondNameUseCase = ValidateSecondNameUseCase(),
+            validateNamesUseCase = ValidateNamesUseCase(),
             validatePlaceUseCase = ValidatePlaceUseCase(),
             validateTimeUseCase = ValidateTimeUseCase(),
             validateGenderSelectionUseCase = ValidateGenderSelectionUseCase()

@@ -1,6 +1,6 @@
 package com.example.rememberme.presentation.peopleList
 
-import android.content.res.Configuration
+import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -13,22 +13,18 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.rememberme.R
-import com.example.rememberme.data.FakeDataSource
-import com.example.rememberme.domain.model.People
+import com.example.rememberme.presentation.common.composables.LoadingStateScreen
 import com.example.rememberme.presentation.common.composables.PeopleListItem
 import com.example.rememberme.presentation.peopleList.composable.EmptyStateScreen
-import com.example.rememberme.ui.theme.RememberMeTheme
 
+private const val TAG = "PeopleListScreen"
 @Composable
 fun PeopleScreen(
     modifier: Modifier = Modifier,
@@ -36,14 +32,14 @@ fun PeopleScreen(
     navigateToDetailScreen: (Long) -> Unit,
     navigateToAddNewPersonScreen: () -> Unit
 ) {
-    val people = viewModel.people.collectAsState(initial = emptyList())
-    PeopleScreenContent(people, modifier, navigateToDetailScreen, navigateToAddNewPersonScreen)
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    PeopleScreenContent(state, modifier, navigateToDetailScreen, navigateToAddNewPersonScreen)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PeopleScreenContent(
-    peopleState: State<List<People>>,
+    state: PeopleState,
     modifier: Modifier = Modifier,
     navigateToDetailScreen: (Long) -> Unit,
     navigateToAddNewPersonScreen: () -> Unit
@@ -70,38 +66,46 @@ fun PeopleScreenContent(
             }
         }
     ) { it ->
-        if (peopleState.value.isEmpty()) {
-            EmptyStateScreen(modifier = modifier.padding(paddingValues = it))
+        if (state.isLoading) {
+            Log.d(TAG, "PeopleScreenContent: Loading")
+            LoadingStateScreen(modifier = modifier.padding(paddingValues = it))
         } else {
-            LazyColumn(
-                modifier = modifier
-                    .padding(it)
-                    .fillMaxSize()
-                    .testTag("PeopleListScreen")
-            ) {
-                items(count = peopleState.value.size) { index ->
-                    PeopleListItem(peopleState.value[index], { personId ->
-                        navigateToDetailScreen(personId)
-                    })
+            Log.d(TAG, "PeopleScreenContent: ${state.people}")
+            if (state.people.isEmpty()) {
+                Log.d(TAG, "PeopleScreenContent: Empty")
+                EmptyStateScreen(modifier = modifier.padding(paddingValues = it))
+            } else {
+                Log.d(TAG, "PeopleScreenContent: ${state.people}")
+                LazyColumn(
+                    modifier = modifier
+                        .padding(it)
+                        .fillMaxSize()
+                        .testTag("PeopleListScreen")
+                ) {
+                    items(count = state.people.size) { index ->
+                        PeopleListItem(state.people[index], { personId ->
+                            navigateToDetailScreen(personId)
+                        })
+                    }
                 }
             }
         }
     }
 }
 
-@Preview(showBackground = true)
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun PeopleScreenContentPreview() {
-    RememberMeTheme {
-        PeopleScreenContent(
-            peopleState = remember {
-                mutableStateOf(FakeDataSource.getPeopleList())
-            },
-            navigateToDetailScreen = {},
-            navigateToAddNewPersonScreen = {}
-        )
-    }
-}
+//@Preview(showBackground = true)
+//@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+//@Composable
+//fun PeopleScreenContentPreview() {
+//    RememberMeTheme {
+//        PeopleScreenContent(
+//            peopleState = remember {
+////                mutableStateOf(FakeDataSource.getPeopleList())
+//            },
+//            navigateToDetailScreen = {},
+//            navigateToAddNewPersonScreen = {}
+//        )
+//    }
+//}
 
 
