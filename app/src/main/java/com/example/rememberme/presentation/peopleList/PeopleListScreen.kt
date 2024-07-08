@@ -1,5 +1,6 @@
 package com.example.rememberme.presentation.peopleList
 
+import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -19,7 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.rememberme.R
-import com.example.rememberme.domain.model.People
+import com.example.rememberme.presentation.common.composables.LoadingStateScreen
 import com.example.rememberme.presentation.common.composables.PeopleListItem
 import com.example.rememberme.presentation.peopleList.composable.EmptyStateScreen
 
@@ -65,19 +66,10 @@ fun PeopleScreenContent(
             }
         }
     ) { it ->
-        if (peopleState.value.isEmpty()) {
-            EmptyStateScreen(modifier = modifier.padding(paddingValues = it))
+        if (state.isLoading) {
+            Log.d(TAG, "PeopleScreenContent: Loading")
+            LoadingStateScreen(modifier = modifier.padding(paddingValues = it))
         } else {
-            LazyColumn(
-                modifier = modifier
-                    .padding(it)
-                    .fillMaxSize()
-                    .testTag("PeopleListScreen")
-            ) {
-                items(count = peopleState.value.size) { index ->
-                    PeopleListItem(peopleState.value[index], { personId ->
-                        navigateToDetailScreen(personId)
-                    })
             Log.d(TAG, "PeopleScreenContent: ${state.people}")
             if (state.people.isEmpty()) {
                 Log.d(TAG, "PeopleScreenContent: Empty")
@@ -94,6 +86,7 @@ fun PeopleScreenContent(
                         PeopleListItem(state.people[index], { personId ->
                             navigateToDetailScreen(personId)
                         })
+                    }
                 }
             }
         }

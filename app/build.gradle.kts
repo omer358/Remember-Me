@@ -117,4 +117,7 @@ dependencies {
 
     // Robolectric
     testImplementation(libs.robolectric)
+
+    // Lottie
+    implementation(libs.lottie.compose)
 }
