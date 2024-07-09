@@ -3,7 +3,8 @@ package com.example.rememberme.presentation.peopleList
 import android.content.res.Configuration
 import android.util.Log
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
@@ -33,6 +34,7 @@ import com.example.rememberme.presentation.peopleList.composable.EmptyStateScree
 import com.example.rememberme.ui.theme.RememberMeTheme
 
 private const val TAG = "PeopleListScreen"
+
 @Composable
 fun PeopleScreen(
     modifier: Modifier = Modifier,
@@ -78,11 +80,14 @@ fun PeopleScreenContent(
             state,
             transitionSpec = {
                 fadeIn(
-                    animationSpec = tween(2000)
-                ) togetherWith fadeOut(animationSpec = tween(2000))
+                    spring(stiffness = Spring.StiffnessMedium)
+                ) togetherWith
+                        fadeOut(
+                            spring(stiffness = Spring.StiffnessMedium)
+                        )
             },
             label = "PeopleScreen animatedContent"
-        ) {peopleState ->
+        ) { peopleState ->
             if (peopleState.isLoading) {
                 Log.d(TAG, "PeopleScreenContent: Loading")
                 LoadingStateScreen(modifier = modifier.padding(paddingValues = it))
