@@ -13,9 +13,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -40,10 +42,17 @@ fun PeopleScreen(
     modifier: Modifier = Modifier,
     viewModel: PeopleViewModel = hiltViewModel(),
     navigateToDetailScreen: (Long) -> Unit,
-    navigateToAddNewPersonScreen: () -> Unit
+    navigateToAddNewPersonScreen: () -> Unit,
+    navigateToSettingsScreen: () -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    PeopleScreenContent(state, modifier, navigateToDetailScreen, navigateToAddNewPersonScreen)
+    PeopleScreenContent(
+        state,
+        modifier,
+        navigateToDetailScreen,
+        navigateToAddNewPersonScreen,
+        navigateToSettingsScreen
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -52,7 +61,8 @@ fun PeopleScreenContent(
     state: PeopleState,
     modifier: Modifier = Modifier,
     navigateToDetailScreen: (Long) -> Unit,
-    navigateToAddNewPersonScreen: () -> Unit
+    navigateToAddNewPersonScreen: () -> Unit,
+    navigateToSettingsScreen: () -> Unit
 ) {
 
     Scaffold(
@@ -61,6 +71,18 @@ fun PeopleScreenContent(
                 title = {
                     Text(stringResource(id = R.string.app_name))
                 },
+                actions = {
+                    IconButton(
+                        onClick = {
+                            navigateToSettingsScreen()
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Settings,
+                            contentDescription = "Add a new Person"
+                        )
+                    }
+                }
             )
         },
         floatingActionButton = {
@@ -124,7 +146,8 @@ fun PeopleScreenContentPreview() {
         PeopleScreenContent(
             state = PeopleState(),
             navigateToDetailScreen = {},
-            navigateToAddNewPersonScreen = {}
+            navigateToAddNewPersonScreen = {},
+            navigateToSettingsScreen = {}
         )
     }
 }

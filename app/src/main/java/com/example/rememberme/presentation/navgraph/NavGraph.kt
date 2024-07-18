@@ -4,10 +4,7 @@ import android.util.Log
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.EaseIn
 import androidx.compose.animation.core.EaseOut
-import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -20,6 +17,7 @@ import com.example.rememberme.presentation.addperson.AddPersonScreen
 import com.example.rememberme.presentation.details.PersonDetailsScreen
 import com.example.rememberme.presentation.onboarding.OnBoardingScreen
 import com.example.rememberme.presentation.peopleList.PeopleScreen
+import com.example.rememberme.presentation.settings.SettingsScreen
 
 private const val TAG = "NavGraph"
 @Composable
@@ -66,6 +64,9 @@ fun NavGraph(
                     },
                     navigateToAddNewPersonScreen = {
                         navController.navigate(Routes.AddPersonScreen.route)
+                    },
+                    navigateToSettingsScreen = {
+                        navController.navigate(Routes.SettingsScreen.route)
                     }
                 )
             }
@@ -105,6 +106,13 @@ fun NavGraph(
                         }
                     )
                 }
+            }
+            composable(route = Routes.SettingsScreen.route) {
+                SettingsScreen(
+                    popUp ={
+                        navController.navigateUp()
+                    }
+                )
             }
         }
     }
