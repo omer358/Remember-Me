@@ -12,8 +12,9 @@ import com.example.rememberme.utils.Constants
 import com.example.rememberme.utils.Constants.REMEMBER_ME_SETTING_NAME
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
-class SettingsManagerImpl(
+class SettingsManagerImpl @Inject constructor(
     private val context: Context
 ) : SettingsManager {
     override suspend fun getThemeMode(): Flow<ThemeMode> {
