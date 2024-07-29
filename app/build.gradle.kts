@@ -124,4 +124,6 @@ dependencies {
     // compose animation
     implementation(libs.androidx.animation)
 
+    // Data Store
+    implementation(libs.androidx.datastore.preferences)
 }

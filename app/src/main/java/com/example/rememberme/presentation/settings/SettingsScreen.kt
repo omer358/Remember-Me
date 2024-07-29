@@ -34,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.rememberme.domain.model.ThemeMode
 import com.example.rememberme.ui.theme.RememberMeTheme
 
 @Composable
@@ -165,17 +166,6 @@ fun ThemeOptionRow(
     }
 }
 
-enum class ThemeMode {
-    LIGHT {
-        override fun toString(): String = "Light"
-    },
-    DARK {
-        override fun toString(): String = "Dark"
-    },
-    SYSTEM {
-        override fun toString(): String = "System Default"
-    }
-}
 
 @Preview(showBackground = true)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)

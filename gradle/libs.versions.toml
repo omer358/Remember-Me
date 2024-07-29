@@ -4,6 +4,7 @@ animation = "1.7.0-beta04"
 coreSplashscreen = "1.0.1"
 coreTesting = "2.2.0"
 coreTestingVersion = "1.1.1"
+datastorePreferences = "1.1.1"
 firebaseBom = "33.1.0"
 gradle = "8.0.2"
 hiltCompiler = "2.49"
@@ -32,11 +33,13 @@ lifecycleRuntimeComposeAndroid = "2.8.2"
 
 
 
+
 [libraries]
 androidx-animation = { module = "androidx.compose.animation:animation", version.ref = "animation" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 androidx-core-testing = { module = "androidx.arch.core:core-testing", version.ref = "coreTesting" }
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleRuntimeKtx" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 androidx-navigation-testing = { module = "androidx.navigation:navigation-testing", version.ref = "navigationCompose" }
