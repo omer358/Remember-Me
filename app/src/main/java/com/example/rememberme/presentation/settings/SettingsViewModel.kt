@@ -35,10 +35,11 @@ class SettingsViewModel @Inject constructor(
 
     private fun getTheme() {
         viewModelScope.launch {
-            _themeMode.update {
-                themeUseCases.getThemeMode().first()
+            themeUseCases.getThemeMode().collect{newTheme ->
+                _themeMode.update {newTheme }
+                Log.d(TAG, "getTheme: ${_themeMode.value}")
+
             }
-            Log.d(TAG, "getTheme: ${_themeMode.value}")
         }
     }
 
