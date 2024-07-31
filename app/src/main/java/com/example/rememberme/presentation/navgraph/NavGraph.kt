@@ -1,6 +1,10 @@
 package com.example.rememberme.presentation.navgraph
 
 import android.util.Log
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.EaseIn
+import androidx.compose.animation.core.EaseOut
+import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -13,6 +17,7 @@ import com.example.rememberme.presentation.addperson.AddPersonScreen
 import com.example.rememberme.presentation.details.PersonDetailsScreen
 import com.example.rememberme.presentation.onboarding.OnBoardingScreen
 import com.example.rememberme.presentation.peopleList.PeopleScreen
+import com.example.rememberme.presentation.settings.SettingsScreen
 
 private const val TAG = "NavGraph"
 @Composable
@@ -22,7 +27,19 @@ fun NavGraph(
 ) {
     NavHost(
         navController = navController,
-        startDestination = startDestination
+        startDestination = startDestination,
+        enterTransition = {
+           slideIntoContainer(
+                animationSpec = tween(300, easing = EaseIn),
+                towards = AnimatedContentTransitionScope.SlideDirection.Start
+            )
+        },
+        exitTransition = {
+            slideOutOfContainer(
+                animationSpec = tween(300, easing = EaseOut),
+                towards = AnimatedContentTransitionScope.SlideDirection.End
+            )
+        }
     ) {
         navigation(
             route = Routes.AppStartNavigation.route,
@@ -47,6 +64,9 @@ fun NavGraph(
                     },
                     navigateToAddNewPersonScreen = {
                         navController.navigate(Routes.AddPersonScreen.route)
+                    },
+                    navigateToSettingsScreen = {
+                        navController.navigate(Routes.SettingsScreen.route)
                     }
                 )
             }
@@ -86,6 +106,13 @@ fun NavGraph(
                         }
                     )
                 }
+            }
+            composable(route = Routes.SettingsScreen.route) {
+                SettingsScreen(
+                    popUp ={
+                        navController.navigateUp()
+                    }
+                )
             }
         }
     }

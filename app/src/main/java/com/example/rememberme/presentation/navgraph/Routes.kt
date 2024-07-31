@@ -10,4 +10,5 @@ sealed class Routes(
     data object AddPersonScreen : Routes("addPersonScreen")
     data object AppStartNavigation : Routes("appStartNavigation")
     data object PeopleNavigation : Routes("peopleNavigation")
+    data object SettingsScreen : Routes("settingScreen")
 }

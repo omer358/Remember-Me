@@ -120,4 +120,10 @@ dependencies {
 
     // Lottie
     implementation(libs.lottie.compose)
+
+    // compose animation
+    implementation(libs.androidx.animation)
+
+    // Data Store
+    implementation(libs.androidx.datastore.preferences)
 }
