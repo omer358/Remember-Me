@@ -1,6 +1,7 @@
 package com.example.rememberme.data.manager
 
 import android.content.Context
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -18,6 +19,7 @@ class SettingsManagerImpl @Inject constructor(
     private val context: Context
 ) : SettingsManager {
     override suspend fun getThemeMode(): Flow<ThemeMode> {
+        Log.d(TAG, "getThemeMode: ")
         return context.dataStore.data.map { preferences ->
             val ordinal = preferences[PreferencesKeys.UI_MODE] ?: ThemeMode.SYSTEM.ordinal
             ThemeMode.entries[ordinal]
@@ -25,6 +27,7 @@ class SettingsManagerImpl @Inject constructor(
     }
 
     override suspend fun setThemeMode(themeMode: ThemeMode) {
+        Log.d(TAG, "setThemeMode: ")
         context.dataStore.edit { preferences ->
             preferences[PreferencesKeys.UI_MODE] = when (themeMode) {
                 ThemeMode.LIGHT -> ThemeMode.LIGHT.ordinal
@@ -35,14 +38,21 @@ class SettingsManagerImpl @Inject constructor(
     }
 
     override suspend fun isDarkModeEnabled(): Flow<Boolean> {
+        Log.d(TAG, "isDarkModeEnabled: ")
         return context.dataStore.data.map { preferences ->
             (preferences[PreferencesKeys.UI_MODE] == ThemeMode.DARK.ordinal)
         }
     }
+
+    companion object {
+        private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = REMEMBER_ME_SETTING_NAME)
+
+        private object PreferencesKeys {
+            val UI_MODE = intPreferencesKey(Constants.UI_MODE)
+        }
+
+        private const val TAG = "SettingsManagerImpl"
+    }
 }
 
-private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = REMEMBER_ME_SETTING_NAME)
 
-private object PreferencesKeys {
-    val UI_MODE = intPreferencesKey(Constants.UI_MODE)
-}

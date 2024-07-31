@@ -21,7 +21,7 @@ class PeopleViewModel @Inject constructor(
         }
         .stateIn(
             scope = viewModelScope,
-            started = SharingStarted.Lazily,
+            started = SharingStarted.WhileSubscribed(5000),
             initialValue = PeopleState(isLoading = true)
         )
     fun onEvent(event: PeopleEvent) {

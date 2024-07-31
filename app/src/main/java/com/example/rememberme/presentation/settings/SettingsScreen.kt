@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -31,9 +30,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.rememberme.R
 import com.example.rememberme.domain.model.ThemeMode
 import com.example.rememberme.ui.theme.RememberMeTheme
 
@@ -43,9 +45,15 @@ fun SettingsScreen(
     popUp: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
+    val state by viewModel.themeMode.collectAsStateWithLifecycle()
+    viewModel.onEvent(SettingsEvent.GetTheme)
     SettingsScreenContent(
         modifier = modifier,
-        onBackClick = popUp
+        onBackClick = popUp,
+        state = state,
+        onThemeSelected = { themeMode ->
+            viewModel.onEvent(SettingsEvent.ChangeTheme(themeMode))
+        }
     )
 }
 
@@ -53,9 +61,10 @@ fun SettingsScreen(
 @Composable
 fun SettingsScreenContent(
     modifier: Modifier = Modifier,
-    onBackClick: () -> Unit = {}
+    onBackClick: () -> Unit = {},
+    state: ThemeMode,
+    onThemeSelected: (ThemeMode) -> Unit
 ) {
-    var selectedOption by remember { mutableStateOf(ThemeMode.SYSTEM) }
     var showDialog by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -88,13 +97,13 @@ fun SettingsScreenContent(
                 },
                 leadingContent = {
                     Icon(
-                        imageVector = Icons.Default.Warning,
+                        painter = painterResource(id = R.drawable.light_mode),
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.primary
                     )
                 },
                 supportingContent = {
-                    Text(text = selectedOption.toString())
+                    Text(text = state.toString())
                 },
             )
         }
@@ -103,9 +112,9 @@ fun SettingsScreenContent(
         showDialog = showDialog,
         onDismissRequest = { showDialog = false },
         onThemeSelected = { themeMode ->
-            selectedOption = themeMode
+            onThemeSelected(themeMode)
         },
-        selectedOption = selectedOption
+        selectedOption = state
     )
 }
 
@@ -173,7 +182,11 @@ fun ThemeOptionRow(
 fun SettingsScreenPreview() {
     RememberMeTheme {
         Surface {
-            SettingsScreenContent()
+            SettingsScreenContent(
+                onBackClick = {},
+                state = ThemeMode.SYSTEM,
+                onThemeSelected = {}
+            )
         }
     }
 }
