@@ -1,6 +1,5 @@
 package com.example.rememberme.presentation.navgraph
 
-import android.util.Log
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.EaseIn
 import androidx.compose.animation.core.EaseOut
@@ -101,7 +100,6 @@ fun NavGraph(
                             navController.navigateUp()
                         },
                         navigateToEditScreen = {id ->
-                            Log.i(TAG, "NavGraph: NavigateToEditScreen triggered")
                             navController.navigate("${Routes.AddPersonScreen.route}/$id")
                         }
                     )

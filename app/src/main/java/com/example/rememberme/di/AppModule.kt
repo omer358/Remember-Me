@@ -19,6 +19,9 @@ import com.example.rememberme.domain.usecases.people.GetPersonById
 import com.example.rememberme.domain.usecases.people.InsertNewPerson
 import com.example.rememberme.domain.usecases.people.PeopleUseCases
 import com.example.rememberme.domain.usecases.people.UpdatePerson
+import com.example.rememberme.domain.usecases.reminders.GetSchedule
+import com.example.rememberme.domain.usecases.reminders.ReminderUseCases
+import com.example.rememberme.domain.usecases.reminders.SetSchedule
 import com.example.rememberme.domain.usecases.theme.GetThemeMode
 import com.example.rememberme.domain.usecases.theme.IsDarkModeEnabled
 import com.example.rememberme.domain.usecases.theme.SetThemeMode
@@ -105,6 +108,17 @@ object AppModule {
             setThemeMode = SetThemeMode(settingsManager),
             getThemeMode = GetThemeMode(settingsManager),
             isDarkModeEnabled = IsDarkModeEnabled(settingsManager)
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideReminderUseCases(
+        settingsManager: SettingsManager
+    ): ReminderUseCases{
+        return ReminderUseCases(
+            getSchedule = GetSchedule(settingsManager),
+            setSchedule = SetSchedule(settingsManager)
         )
     }
 }

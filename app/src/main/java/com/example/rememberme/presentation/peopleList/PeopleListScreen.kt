@@ -1,7 +1,6 @@
 package com.example.rememberme.presentation.peopleList
 
 import android.content.res.Configuration
-import android.util.Log
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
@@ -111,15 +110,11 @@ fun PeopleScreenContent(
             label = "PeopleScreen animatedContent"
         ) { peopleState ->
             if (peopleState.isLoading) {
-                Log.d(TAG, "PeopleScreenContent: Loading")
                 LoadingStateScreen(modifier = modifier.padding(paddingValues = it))
             } else {
-                Log.d(TAG, "PeopleScreenContent: ${peopleState.people}")
                 if (peopleState.people.isEmpty()) {
-                    Log.d(TAG, "PeopleScreenContent: Empty")
                     EmptyStateScreen(modifier = modifier.padding(paddingValues = it))
                 } else {
-                    Log.d(TAG, "PeopleScreenContent: ${peopleState.people}")
                     LazyColumn(
                         modifier = modifier
                             .padding(it)

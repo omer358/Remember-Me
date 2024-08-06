@@ -5,7 +5,6 @@ package com.example.rememberme.presentation.addperson
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import android.util.Log
 import android.view.ContextThemeWrapper
 import android.widget.DatePicker
 import android.widget.TimePicker
@@ -80,10 +79,10 @@ fun AddPersonScreen(
     var showBottomSheet by remember { mutableStateOf(false) }
     var selectedAvatarResId by remember {
         if (personId == null) {
-            Log.i(TAG, "AddPersonScreen: Person is null")
+
             mutableIntStateOf(R.drawable.ic_m1)
         } else {
-            Log.i(TAG, "AddPersonScreen: Person is not null")
+
             mutableIntStateOf(uiState.avatar)
         }
     }
@@ -93,10 +92,8 @@ fun AddPersonScreen(
 
     LaunchedEffect(personId) {
         if (personId != null) {
-            Log.i(TAG,"LoadPersonDetails on the addPerson screen")
             viewModel.loadPersonDetails(personId)
         } else {
-            Log.i(TAG,"creating new person screen")
             viewModel.resetForm()
         }
     }
@@ -245,7 +242,6 @@ fun DateTimePicker(
     val calendar = Calendar.getInstance()
     val selectedDateTime = remember { mutableStateOf("") }
     selectedDateTime.value = uiState.time
-    Log.i(TAG,"currentDate from the UiState: ${uiState.time}")
 
     if (uiState.time.isBlank()) {
         calendar.timeInMillis = System.currentTimeMillis()
@@ -361,7 +357,7 @@ fun GenderRadioButton(
     modifier: Modifier = Modifier,
     errorMessage: String?
 ) {
-    Log.d(TAG, "GenderRadioButtonError: $errorMessage")
+
     val genderOptions = listOf("Male", "Female")
     Column(modifier = modifier) {
         Text("Gender", modifier = Modifier.padding(bottom = 4.dp))

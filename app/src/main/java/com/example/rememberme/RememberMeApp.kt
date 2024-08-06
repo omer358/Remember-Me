@@ -26,7 +26,8 @@ private const val TAG = "RememberMeApp"
 fun RememberMeApp() {
     val viewModel: SettingsViewModel = hiltViewModel()
     
-    val themeMode by viewModel.themeMode.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val themeMode = uiState.theme
     val isDarkTheme = when (themeMode) {
         ThemeMode.LIGHT -> false
         ThemeMode.DARK -> true
