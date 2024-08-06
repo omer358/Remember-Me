@@ -169,19 +169,16 @@ fun RemindersRepetitionDialog(
             text = {
                 Column {
                     ReminderOptionRow(
-                        "Once a day",
                         RemindersRepetition.OnceADay,
                         selectedOption,
                         onRepetitionSelected
                     )
                     ReminderOptionRow(
-                        "Three a day",
                         RemindersRepetition.ThreeADay,
                         selectedOption,
                         onRepetitionSelected
                     )
                     ReminderOptionRow(
-                        "Five a day",
                         RemindersRepetition.FiveADay,
                         selectedOption,
                         onRepetitionSelected
@@ -215,19 +212,16 @@ fun ThemeSelectionDialog(
             text = {
                 Column {
                     ThemeOptionRow(
-                        "Light",
                         ThemeMode.LIGHT,
                         selectedOption,
                         onThemeSelected
                     )
                     ThemeOptionRow(
-                        "Dark",
                         ThemeMode.DARK,
                         selectedOption,
                         onThemeSelected
                     )
                     ThemeOptionRow(
-                        "System Default",
                         ThemeMode.SYSTEM,
                         selectedOption,
                         onThemeSelected
@@ -245,7 +239,6 @@ fun ThemeSelectionDialog(
 
 @Composable
 fun ThemeOptionRow(
-    label: String,
     themeMode: ThemeMode,
     selectedOption: ThemeMode,
     onOptionSelected: (ThemeMode) -> Unit
@@ -262,13 +255,12 @@ fun ThemeOptionRow(
             onClick = { onOptionSelected(themeMode) }
         )
         Spacer(modifier = Modifier.width(8.dp))
-        Text(text = label)
+        Text(text = themeMode.toString())
     }
 }
 
 @Composable
 fun ReminderOptionRow(
-    label: String,
     repetition: RemindersRepetition,
     selectedOption: RemindersRepetition,
     onOptionSelected: (RemindersRepetition) -> Unit
@@ -284,7 +276,7 @@ fun ReminderOptionRow(
             onClick = { onOptionSelected(repetition) }
         )
         Spacer(modifier = Modifier.width(8.dp))
-        Text(text = label)
+        Text(text = repetition.toString())
     }
 }
 
