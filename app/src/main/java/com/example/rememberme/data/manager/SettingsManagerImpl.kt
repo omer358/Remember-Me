@@ -25,9 +25,6 @@ class SettingsManagerImpl @Inject constructor(
             val ordinal = preferences[PreferencesKeys.UI_MODE] ?: ThemeMode.SYSTEM.ordinal
             ThemeMode.entries[ordinal]
         }
-        theme.collect {
-            Log.d(TAG, "getThemeMode: the current theme is: $it ")
-        }
         return theme
     }
 
