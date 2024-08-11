@@ -21,6 +21,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
@@ -76,7 +77,8 @@ fun PersonDetailsScreen(
                 uiState.value.person!!,
                 navigateUp,
                 navigateToEditScreen,
-                onDeletePerson = {viewModel.onEvent(PersonDetailsEvent.DeletePerson)}
+                onDeletePerson = {viewModel.onEvent(PersonDetailsEvent.DeletePerson)},
+                onSendNotification = {viewModel.sendNotification()}
             )
         }
         else -> {
@@ -107,7 +109,8 @@ fun PersonDetailsContent(
     navigateUp: () -> Unit,
     navigateToEditScreen: (Long?) -> Unit,
     onDeletePerson: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onSendNotification: () -> Unit,
 ) {
     val scrollState = rememberScrollState()
     Column(
@@ -151,9 +154,11 @@ fun PersonDetailsContent(
                         )
                     }
                     Row {
-                        IconButton(onClick = {
+                        IconButton(
+                            onClick = {
                             navigateToEditScreen(person.id)
-                        }) {
+                        }
+                        ) {
                             Icon(
                                 imageVector = Icons.Default.Edit,
                                 contentDescription = null,
@@ -166,6 +171,15 @@ fun PersonDetailsContent(
                         }) {
                             Icon(
                                 imageVector = Icons.Filled.Delete,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onPrimary
+                            )
+                        }
+                        IconButton(onClick = {
+                            onSendNotification()
+                        }){
+                            Icon(
+                                imageVector = Icons.Default.Notifications,
                                 contentDescription = null,
                                 tint = MaterialTheme.colorScheme.onPrimary
                             )
@@ -264,7 +278,8 @@ fun PersonDetailsContentPreview() {
             navigateUp = {
             },
             navigateToEditScreen = {},
-            onDeletePerson = {}
+            onDeletePerson = {},
+            onSendNotification = {}
         )
     }
 }
