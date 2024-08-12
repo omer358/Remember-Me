@@ -1,6 +1,8 @@
     package com.example.rememberme.domain.usecases.people
 
-    data class PeopleUseCases(
+    import javax.inject.Inject
+
+    data class PeopleUseCases @Inject constructor(
         val getAllPeople: GetAllPeople,
         val getPersonById: GetPersonById,
         val insertPerson: InsertNewPerson,

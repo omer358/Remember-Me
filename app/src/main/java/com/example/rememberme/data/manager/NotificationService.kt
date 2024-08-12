@@ -14,6 +14,7 @@ import androidx.core.app.NotificationManagerCompat
 import com.example.rememberme.MainActivity
 import com.example.rememberme.R
 import com.example.rememberme.domain.model.People
+import com.example.rememberme.presentation.navgraph.Routes
 import javax.inject.Inject
 
 class NotificationService @Inject constructor(private val context: Context) {
@@ -30,7 +31,7 @@ class NotificationService @Inject constructor(private val context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = "People Notification"
             val descriptionText = "Reminders about the people you have met"
-            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val importance = NotificationManager.IMPORTANCE_HIGH
             val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
                 description = descriptionText
             }
@@ -43,6 +44,8 @@ class NotificationService @Inject constructor(private val context: Context) {
     fun showNotification(person: People) {
         val intent = Intent(context, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            putExtra("destination", Routes.PersonDetailsScreen.route)
+            putExtra("personId", person.id)
         }
         val pendingIntent: PendingIntent =
             PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
@@ -51,7 +54,7 @@ class NotificationService @Inject constructor(private val context: Context) {
             .setSmallIcon(R.drawable.ic_m2)
             .setContentTitle("Do you Remember ${person.firstName}?")
             .setContentText("You have met him at ${person.place}")
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setPriority(NotificationCompat.PRIORITY_MAX)
             .setChannelId(CHANNEL_ID)
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)

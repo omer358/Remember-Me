@@ -67,13 +67,21 @@ class MainActivity : ComponentActivity() {
         }
     }
     private fun scheduleNotificationWork() {
-        // Schedule the notification
-        val notificationWorkRequest =
-            PeriodicWorkRequestBuilder<NotificationWorker>(15, TimeUnit.MINUTES)
-                .addTag("notificationWork")
-                .setInitialDelay(5, TimeUnit.SECONDS)
-            .build()
-        WorkManager.getInstance(this).enqueue(notificationWorkRequest)
+        Log.i(TAG, "Scheduling notification work")
+        val workManager = WorkManager.getInstance(this)
+        val existingWork = workManager.getWorkInfosByTag("notificationWork").get()
+
+        if (existingWork.isEmpty()) {
+            Log.i(TAG, "No existing work found, scheduling new work")
+            val notificationWorkRequest =
+                PeriodicWorkRequestBuilder<NotificationWorker>(1, TimeUnit.MINUTES)
+                    .addTag("notificationWork")
+                    .setInitialDelay(5, TimeUnit.SECONDS)
+                    .build()
+            workManager.enqueue(notificationWorkRequest)
+        }else{
+            Log.i(TAG, "Existing work found, not scheduling new work")
+        }
     }
     companion object {
         private const val TAG = "MainActivity"
