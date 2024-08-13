@@ -11,6 +11,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.example.rememberme.data.manager.NotificationWorker
@@ -68,20 +69,15 @@ class MainActivity : ComponentActivity() {
     }
     private fun scheduleNotificationWork() {
         Log.i(TAG, "Scheduling notification work")
-        val workManager = WorkManager.getInstance(this)
-        val existingWork = workManager.getWorkInfosByTag("notificationWork").get()
+        val notificationWorkRequest = PeriodicWorkRequestBuilder<NotificationWorker>(15, TimeUnit.MINUTES)
+            .addTag("notificationWorkRequest")
+            .build()
 
-        if (existingWork.isEmpty()) {
-            Log.i(TAG, "No existing work found, scheduling new work")
-            val notificationWorkRequest =
-                PeriodicWorkRequestBuilder<NotificationWorker>(1, TimeUnit.MINUTES)
-                    .addTag("notificationWork")
-                    .setInitialDelay(5, TimeUnit.SECONDS)
-                    .build()
-            workManager.enqueue(notificationWorkRequest)
-        }else{
-            Log.i(TAG, "Existing work found, not scheduling new work")
-        }
+        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+            "notificationWork",
+            ExistingPeriodicWorkPolicy.KEEP, // Keeps the existing work if it exists
+            notificationWorkRequest
+        )
     }
     companion object {
         private const val TAG = "MainActivity"
