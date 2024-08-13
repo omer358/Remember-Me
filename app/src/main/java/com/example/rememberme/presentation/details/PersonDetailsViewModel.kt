@@ -3,6 +3,7 @@ package com.example.rememberme.presentation.details
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.rememberme.data.manager.NotificationService
 import com.example.rememberme.domain.usecases.people.PeopleUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,7 +14,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PersonDetailsViewModel @Inject constructor(
-    private val peopleUseCases: PeopleUseCases
+    private val peopleUseCases: PeopleUseCases,
+    private val notificationManager: NotificationService
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(PersonDetailsUiState())
     val uiState: StateFlow<PersonDetailsUiState> = _uiState
@@ -63,6 +65,10 @@ class PersonDetailsViewModel @Inject constructor(
                 _uiState.update { _uiState.value.copy(error = e.message) }
             }
         }
+    }
+
+     fun sendNotification(){
+        notificationManager.showNotification(_uiState.value.person!!)
     }
 
     companion object {

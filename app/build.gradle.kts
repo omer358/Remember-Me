@@ -105,6 +105,10 @@ dependencies {
     implementation(libs.hilt.android)
     implementation(libs.androidx.hilt.navigation.compose)
     kapt(libs.hilt.compiler)
+    // Hilt Worker
+    implementation(libs.androidx.hilt.work)
+    // When using Kotlin.
+    kapt(libs.androidx.hilt.compiler)
 
     // Unit Test
     testImplementation(libs.mockito.core)
@@ -126,4 +130,10 @@ dependencies {
 
     // Data Store
     implementation(libs.androidx.datastore.preferences)
+
+    // Work Manager
+    // Kotlin + coroutines
+    implementation(libs.androidx.work.runtime.ktx)
+    // optional - Test helpers
+    androidTestImplementation(libs.androidx.work.testing)
 }

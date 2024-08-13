@@ -5,6 +5,7 @@ import android.content.Context
 import androidx.room.Room
 import com.example.rememberme.data.PeopleRepositoryImpl
 import com.example.rememberme.data.local.PeopleDatabase
+import com.example.rememberme.data.manager.NotificationService
 import com.example.rememberme.data.manager.SettingsManagerImpl
 import com.example.rememberme.domain.manager.SettingsManager
 import com.example.rememberme.domain.repository.PeopleRepository
@@ -120,5 +121,11 @@ object AppModule {
             getSchedule = GetSchedule(settingsManager),
             setSchedule = SetSchedule(settingsManager)
         )
+    }
+
+    @Provides
+    @Singleton
+    fun provideNotificationService(@ApplicationContext context: Context): NotificationService {
+        return NotificationService(context)
     }
 }

@@ -1,7 +1,5 @@
 package com.example.rememberme.presentation.details
-
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -23,6 +21,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
@@ -69,23 +68,20 @@ fun PersonDetailsScreen(
     when {
         uiState.value.isLoading -> {
             LoadingStateScreen()
-            Log.d(TAG, "PersonDetailsScreen: Loading")
         }
         uiState.value.error != null -> {
-            Log.e(TAG, "PersonDetailsScreen: Error - ${uiState.value.error}")
             ErrorContent(uiState.value.error!!)
         }
         uiState.value.person != null -> {
-            Log.d(TAG, "PersonDetailsScreen: ${uiState.value.person}")
             PersonDetailsContent(
                 uiState.value.person!!,
                 navigateUp,
                 navigateToEditScreen,
-                onDeletePerson = {viewModel.onEvent(PersonDetailsEvent.DeletePerson)}
+                onDeletePerson = {viewModel.onEvent(PersonDetailsEvent.DeletePerson)},
+                onSendNotification = {viewModel.sendNotification()}
             )
         }
         else -> {
-            Log.e(TAG, "PersonDetailsScreen: Person not found")
             // Optionally, you can add a UI to show "Person not found"
         }
     }
@@ -113,7 +109,8 @@ fun PersonDetailsContent(
     navigateUp: () -> Unit,
     navigateToEditScreen: (Long?) -> Unit,
     onDeletePerson: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onSendNotification: () -> Unit,
 ) {
     val scrollState = rememberScrollState()
     Column(
@@ -148,7 +145,6 @@ fun PersonDetailsContent(
                 ) {
                     IconButton(
                         onClick = {
-                            Log.d(TAG, "PersonDetailsContent: Back arrow Clicked!")
                             navigateUp()
                         }) {
                         Icon(
@@ -158,10 +154,11 @@ fun PersonDetailsContent(
                         )
                     }
                     Row {
-                        IconButton(onClick = {
-                            Log.d(TAG, "PersonDetailsContent: Edit Person Clicked, navigating to edit screen with personId: ${person.id}")
+                        IconButton(
+                            onClick = {
                             navigateToEditScreen(person.id)
-                        }) {
+                        }
+                        ) {
                             Icon(
                                 imageVector = Icons.Default.Edit,
                                 contentDescription = null,
@@ -169,12 +166,20 @@ fun PersonDetailsContent(
                             )
                         }
                         IconButton(onClick = {
-                            Log.d(TAG, "PersonDetailsContent: Delete Person Clicked, Deleting person with personId: ${person.id}")
                             onDeletePerson()
                             navigateUp()
                         }) {
                             Icon(
                                 imageVector = Icons.Filled.Delete,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onPrimary
+                            )
+                        }
+                        IconButton(onClick = {
+                            onSendNotification()
+                        }){
+                            Icon(
+                                imageVector = Icons.Default.Notifications,
                                 contentDescription = null,
                                 tint = MaterialTheme.colorScheme.onPrimary
                             )
@@ -271,10 +276,10 @@ fun PersonDetailsContentPreview() {
                 avatar = R.drawable.ic_m4
             ),
             navigateUp = {
-                Log.d(TAG, "PersonDetailsContentPreview: Clicked")
             },
             navigateToEditScreen = {},
-            onDeletePerson = {}
+            onDeletePerson = {},
+            onSendNotification = {}
         )
     }
 }
