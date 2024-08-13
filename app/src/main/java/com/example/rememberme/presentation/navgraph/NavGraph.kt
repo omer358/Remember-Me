@@ -11,6 +11,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
 import com.example.rememberme.presentation.addperson.AddPersonScreen
 import com.example.rememberme.presentation.details.PersonDetailsScreen
@@ -90,7 +91,8 @@ fun NavGraph(
             }
             composable(
                 route = "${Routes.PersonDetailsScreen.route}/{personId}",
-                arguments = listOf(navArgument("personId") { type = NavType.StringType })
+                arguments = listOf(navArgument("personId") { type = NavType.StringType }),
+                deepLinks = listOf(navDeepLink { uriPattern = "app://people/{personId}" })
             ) { it ->
                 val personId = it.arguments?.getString("personId")?.toLong()
                 if (personId != null) {

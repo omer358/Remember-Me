@@ -7,14 +7,13 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.example.rememberme.MainActivity
 import com.example.rememberme.R
 import com.example.rememberme.domain.model.People
-import com.example.rememberme.presentation.navgraph.Routes
 import javax.inject.Inject
 
 class NotificationService @Inject constructor(private val context: Context) {
@@ -42,18 +41,24 @@ class NotificationService @Inject constructor(private val context: Context) {
     }
 
     fun showNotification(person: People) {
-        val intent = Intent(context, MainActivity::class.java).apply {
+        val deepLinkIntent = Intent(
+            Intent.ACTION_VIEW,
+            Uri.parse("app://people/${person.id}")
+        ).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            putExtra("destination", Routes.PersonDetailsScreen.route)
-            putExtra("personId", person.id)
         }
-        val pendingIntent: PendingIntent =
-            PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+
+        val pendingIntent: PendingIntent = PendingIntent.getActivity(
+            context,
+            0,
+            deepLinkIntent,
+            PendingIntent.FLAG_IMMUTABLE
+        )
 
         val builder = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_m2)
-            .setContentTitle("Do you Remember ${person.firstName}?")
-            .setContentText("You have met him at ${person.place}")
+            .setContentTitle("Do you remember ${person.firstName}?")
+            .setContentText("You met at ${person.place}")
             .setPriority(NotificationCompat.PRIORITY_MAX)
             .setChannelId(CHANNEL_ID)
             .setContentIntent(pendingIntent)
@@ -65,13 +70,6 @@ class NotificationService @Inject constructor(private val context: Context) {
                     Manifest.permission.POST_NOTIFICATIONS
                 ) != PackageManager.PERMISSION_GRANTED
             ) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
                 return
             }
             notify(NOTIFICATION_ID, builder.build())
