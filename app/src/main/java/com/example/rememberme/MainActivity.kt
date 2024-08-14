@@ -27,17 +27,18 @@ import java.util.concurrent.TimeUnit
 class MainActivity : ComponentActivity() {
 
     private val settingsViewModel: SettingsViewModel by viewModels()
-
+    private var lastRepetition: RemindersRepetition? = null
 
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted: Boolean ->
         lifecycleScope.launch {
             settingsViewModel.uiState.collect { uiState ->
-                if (isGranted) {
+                if (isGranted && uiState.remindersRepetition != lastRepetition) {
                     // Permission is granted. Schedule the notification work with the correct repetition.
                     Log.i(TAG, "Permission granted")
                     scheduleNotificationWork(uiState.remindersRepetition)
+                    lastRepetition = uiState.remindersRepetition
                 } else {
                     Log.i(TAG, "Permission denied")
                     // Permission is denied. Handle the case.
@@ -45,6 +46,7 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -56,24 +58,28 @@ class MainActivity : ComponentActivity() {
 
         lifecycleScope.launch {
             settingsViewModel.uiState.collect { uiState ->
+                Log.i(TAG, "Settings UI state: $uiState")
                 val remindersRepetition = uiState.remindersRepetition
 
-                // Check for notification permission only if the SDK version is 33 or higher
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    if (ContextCompat.checkSelfPermission(
-                            this@MainActivity,
-                            POST_NOTIFICATIONS
-                        ) == PackageManager.PERMISSION_GRANTED
-                    ) {
-                        // Permission is already granted
-                        scheduleNotificationWork(remindersRepetition)
+                if (remindersRepetition != lastRepetition) {
+                    // Check for notification permission only if the SDK version is 33 or higher
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        if (ContextCompat.checkSelfPermission(
+                                this@MainActivity,
+                                POST_NOTIFICATIONS
+                            ) == PackageManager.PERMISSION_GRANTED
+                        ) {
+                            // Permission is already granted
+                            scheduleNotificationWork(remindersRepetition)
+                        } else {
+                            // Request permission
+                            requestPermissionLauncher.launch(POST_NOTIFICATIONS)
+                        }
                     } else {
-                        // Request permission
-                        requestPermissionLauncher.launch(POST_NOTIFICATIONS)
+                        // SDK version is lower than 33, no need to request POST_NOTIFICATIONS permission
+                        scheduleNotificationWork(remindersRepetition)
                     }
-                } else {
-                    // SDK version is lower than 33, no need to request POST_NOTIFICATIONS permission
-                    scheduleNotificationWork(remindersRepetition)
+                    lastRepetition = remindersRepetition
                 }
             }
         }
@@ -83,7 +89,7 @@ class MainActivity : ComponentActivity() {
         Log.i(TAG, "Scheduling notification work with repetition: $repetition")
         val repeatInterval = when (repetition) {
             RemindersRepetition.OnceADay -> 24
-            RemindersRepetition.ThreeADay -> 24 /3
+            RemindersRepetition.ThreeADay -> 24 / 3
             RemindersRepetition.FiveADay -> 24 / 5
         }
 
@@ -92,11 +98,12 @@ class MainActivity : ComponentActivity() {
             repeatInterval.toLong(),
             TimeUnit.HOURS)
             .addTag("notificationWorkRequest")
+            .setInitialDelay(repeatInterval.toLong(), TimeUnit.HOURS)
             .build()
 
         WorkManager.getInstance(this).enqueueUniquePeriodicWork(
             "notificationWork",
-            ExistingPeriodicWorkPolicy.KEEP, // Keeps the existing work if it exists
+            ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE,
             notificationWorkRequest
         )
     }
@@ -104,5 +111,4 @@ class MainActivity : ComponentActivity() {
     companion object {
         private const val TAG = "MainActivity"
     }
-
 }
