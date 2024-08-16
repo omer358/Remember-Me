@@ -269,7 +269,8 @@ fun ReminderOptionRow(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
-            .clickable { onOptionSelected(repetition) }
+            .clickable { onOptionSelected(repetition) },
+        verticalAlignment = Alignment.CenterVertically
     ) {
         RadioButton(
             selected = (repetition == selectedOption),
