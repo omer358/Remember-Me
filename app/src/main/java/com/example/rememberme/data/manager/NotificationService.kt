@@ -18,9 +18,10 @@ import javax.inject.Inject
 
 class NotificationService @Inject constructor(private val context: Context) {
 
-    private val CHANNEL_ID = "people_notification_channel"
-    private val NOTIFICATION_ID = 0
-
+    companion object {
+        private const val CHANNEL_ID = "people_notification_channel"
+        private const val NOTIFICATION_ID = 0
+    }
 
     init {
         createNotificationChannel()
@@ -28,8 +29,8 @@ class NotificationService @Inject constructor(private val context: Context) {
 
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = "People Notification"
-            val descriptionText = "Reminders about the people you have met"
+            val name = context.getString(R.string.notification_channel_name)
+            val descriptionText = context.getString(R.string.notification_channel_description)
             val importance = NotificationManager.IMPORTANCE_HIGH
             val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
                 description = descriptionText

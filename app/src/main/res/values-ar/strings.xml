@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">تذكرني</string>
+    <string name="notification_channel_name">People Reminders</string>
+    <string name="notification_channel_description">Reminders about the people you have met</string>
 </resources>
