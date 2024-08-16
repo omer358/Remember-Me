@@ -254,7 +254,7 @@ fun ThemeOptionRow(
             selected = (themeMode == selectedOption),
             onClick = { onOptionSelected(themeMode) }
         )
-        Spacer(modifier = Modifier.width(8.dp))
+        Spacer(modifier = Modifier.width(4.dp))
         Text(text = themeMode.toString())
     }
 }
@@ -276,7 +276,7 @@ fun ReminderOptionRow(
             selected = (repetition == selectedOption),
             onClick = { onOptionSelected(repetition) }
         )
-        Spacer(modifier = Modifier.width(8.dp))
+        Spacer(modifier = Modifier.width(4.dp))
         Text(text = repetition.toString())
     }
 }
