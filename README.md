@@ -9,6 +9,8 @@ Here's a detailed README file for your **RememberMe** project:
 
 **RememberMe** is an Android application designed to help users keep track of the people they've met and set reminders for interactions. It allows users to schedule notifications based on different repetition intervals, ensuring they never forget important connections.
 
+![Watch the video](screenshots/remember_me_app.mp4)
+
 ## Table of Contents
 
 - [Features](#features)
