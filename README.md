@@ -88,23 +88,14 @@ To get started with **RememberMe**, follow these steps:
 
 Here are some screenshots of the **RememberMe** app:
 
-![Empty State Screen](screenshots/empty_state_screen.png)
-*Empty State Screen*
+!| home screen  | empty state screen |
+|    :---:     |     :---:      |
+| <img src="screenshots/people_list_screen.png" alt="home" width="300"> | <img src="screenshots/empty_state_screen.png" alt="empty state" width="300"> |
+| person details screen | add_person screen |
+| <img src="screenshots/person_details_screen.png" alt="person details Screen" width="300">  | <img src="screenshots/add_person_screen.png" alt="add person" width="300"> |
+| reminder notification screen |  settings screen |
+|<img src="screenshots/reminder_notification.png" alt=" reminder" width="300"> | <img src="screenshots/settings_screen.png" alt="settings " width="300"> |
 
-![Home Screen](screenshots/people_list_screen.png)
-*Home Screen*
-
-![Person Details Screen](screenshots/person_details_screen.png)
-*Person Details Screen*
-
-![Add Person Screen](screenshots/add_person_screen.png)
-*Add Person Screen*
-
-![Settings Screen](screenshots/settings_screen.png)
-*Settings Screen*
-
-![Notification Example](screenshots/reminder_notification.png)
-*Notification Example*
 
 ## Contributing
 
