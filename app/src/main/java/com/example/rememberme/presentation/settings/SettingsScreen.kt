@@ -254,7 +254,7 @@ fun ThemeOptionRow(
             selected = (themeMode == selectedOption),
             onClick = { onOptionSelected(themeMode) }
         )
-        Spacer(modifier = Modifier.width(8.dp))
+        Spacer(modifier = Modifier.width(4.dp))
         Text(text = themeMode.toString())
     }
 }
@@ -269,13 +269,14 @@ fun ReminderOptionRow(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
-            .clickable { onOptionSelected(repetition) }
+            .clickable { onOptionSelected(repetition) },
+        verticalAlignment = Alignment.CenterVertically
     ) {
         RadioButton(
             selected = (repetition == selectedOption),
             onClick = { onOptionSelected(repetition) }
         )
-        Spacer(modifier = Modifier.width(8.dp))
+        Spacer(modifier = Modifier.width(4.dp))
         Text(text = repetition.toString())
     }
 }

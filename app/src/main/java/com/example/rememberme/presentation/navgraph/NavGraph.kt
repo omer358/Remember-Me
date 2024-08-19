@@ -1,8 +1,7 @@
 package com.example.rememberme.presentation.navgraph
 
 import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.core.EaseIn
-import androidx.compose.animation.core.EaseOut
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
@@ -20,6 +19,7 @@ import com.example.rememberme.presentation.peopleList.PeopleScreen
 import com.example.rememberme.presentation.settings.SettingsScreen
 
 private const val TAG = "NavGraph"
+
 @Composable
 fun NavGraph(
     startDestination: String,
@@ -29,15 +29,28 @@ fun NavGraph(
         navController = navController,
         startDestination = startDestination,
         enterTransition = {
-           slideIntoContainer(
-                animationSpec = tween(300, easing = EaseIn),
-                towards = AnimatedContentTransitionScope.SlideDirection.Start
+            slideIntoContainer(
+                AnimatedContentTransitionScope.SlideDirection.Start,
+                animationSpec = tween(700, easing = FastOutSlowInEasing)
+
             )
         },
         exitTransition = {
             slideOutOfContainer(
-                animationSpec = tween(300, easing = EaseOut),
-                towards = AnimatedContentTransitionScope.SlideDirection.End
+                AnimatedContentTransitionScope.SlideDirection.Start,
+                animationSpec = tween(700)
+            )
+        },
+        popEnterTransition = {
+            slideIntoContainer(
+                AnimatedContentTransitionScope.SlideDirection.End,
+                animationSpec = tween(700)
+            )
+        },
+        popExitTransition = {
+            slideOutOfContainer(
+                AnimatedContentTransitionScope.SlideDirection.End,
+                animationSpec = tween(700)
             )
         }
     ) {
@@ -78,7 +91,9 @@ fun NavGraph(
             }
             composable(
                 route = "${Routes.AddPersonScreen.route}/{personId}",
-                arguments = listOf(navArgument("personId") { type = NavType.StringType; nullable = true })
+                arguments = listOf(navArgument("personId") {
+                    type = NavType.StringType; nullable = true
+                })
             ) {
                 val personId = it.arguments?.getString("personId")?.toLongOrNull()
 
@@ -101,7 +116,7 @@ fun NavGraph(
                         navigateUp = {
                             navController.navigateUp()
                         },
-                        navigateToEditScreen = {id ->
+                        navigateToEditScreen = { id ->
                             navController.navigate("${Routes.AddPersonScreen.route}/$id")
                         }
                     )
@@ -109,7 +124,7 @@ fun NavGraph(
             }
             composable(route = Routes.SettingsScreen.route) {
                 SettingsScreen(
-                    popUp ={
+                    popUp = {
                         navController.navigateUp()
                     }
                 )

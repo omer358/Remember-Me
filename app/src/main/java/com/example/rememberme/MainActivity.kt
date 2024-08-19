@@ -10,6 +10,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
@@ -23,6 +24,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
+
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
@@ -31,55 +33,65 @@ class MainActivity : ComponentActivity() {
 
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
-    ) { isGranted: Boolean ->
+    ) { isGranted ->
+        handlePermissionResult(isGranted)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setupUI()
+        observeUiState()
+    }
+
+    private fun setupUI() {
+        enableEdgeToEdge()
+        installSplashScreen()
+        setContent { RememberMeApp() }
+    }
+
+    private fun observeUiState() {
         lifecycleScope.launch {
             settingsViewModel.uiState.collect { uiState ->
-                if (isGranted && uiState.remindersRepetition != lastRepetition) {
-                    // Permission is granted. Schedule the notification work with the correct repetition.
-                    Log.i(TAG, "Permission granted")
-                    scheduleNotificationWork(uiState.remindersRepetition)
-                    lastRepetition = uiState.remindersRepetition
-                } else {
-                    Log.i(TAG, "Permission denied")
-                    // Permission is denied. Handle the case.
+                if (shouldScheduleWork(uiState.remindersRepetition)) {
+                    handlePermissionsAndScheduleWork(uiState.remindersRepetition)
                 }
             }
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        installSplashScreen()
+    private fun shouldScheduleWork(currentRepetition: RemindersRepetition): Boolean {
+        return currentRepetition != lastRepetition
+    }
 
-        setContent {
-            RememberMeApp()
+    private fun handlePermissionsAndScheduleWork(repetition: RemindersRepetition) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (hasNotificationPermission()) {
+                scheduleNotificationWork(repetition)
+            } else {
+                requestNotificationPermission()
+            }
+        } else {
+            scheduleNotificationWork(repetition)
         }
+    }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    private fun hasNotificationPermission(): Boolean {
+        return ContextCompat.checkSelfPermission(
+            this, POST_NOTIFICATIONS
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    private fun requestNotificationPermission() {
+        requestPermissionLauncher.launch(POST_NOTIFICATIONS)
+    }
+
+    private fun handlePermissionResult(isGranted: Boolean) {
         lifecycleScope.launch {
             settingsViewModel.uiState.collect { uiState ->
-                Log.i(TAG, "Settings UI state: $uiState")
-                val remindersRepetition = uiState.remindersRepetition
-
-                if (remindersRepetition != lastRepetition) {
-                    // Check for notification permission only if the SDK version is 33 or higher
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                        if (ContextCompat.checkSelfPermission(
-                                this@MainActivity,
-                                POST_NOTIFICATIONS
-                            ) == PackageManager.PERMISSION_GRANTED
-                        ) {
-                            // Permission is already granted
-                            scheduleNotificationWork(remindersRepetition)
-                        } else {
-                            // Request permission
-                            requestPermissionLauncher.launch(POST_NOTIFICATIONS)
-                        }
-                    } else {
-                        // SDK version is lower than 33, no need to request POST_NOTIFICATIONS permission
-                        scheduleNotificationWork(remindersRepetition)
-                    }
-                    lastRepetition = remindersRepetition
+                if (isGranted && shouldScheduleWork(uiState.remindersRepetition)) {
+                    scheduleNotificationWork(uiState.remindersRepetition)
                 }
             }
         }
@@ -87,28 +99,33 @@ class MainActivity : ComponentActivity() {
 
     private fun scheduleNotificationWork(repetition: RemindersRepetition) {
         Log.i(TAG, "Scheduling notification work with repetition: $repetition")
-        val repeatInterval = when (repetition) {
-            RemindersRepetition.OnceADay -> 24
-            RemindersRepetition.ThreeADay -> 24 / 3
-            RemindersRepetition.FiveADay -> 24 / 5
-        }
+        val repeatInterval = getRepeatIntervalInHours(repetition).toLong()
 
         Log.i(TAG, "Scheduling notification work with interval: $repeatInterval hours")
         val notificationWorkRequest = PeriodicWorkRequestBuilder<NotificationWorker>(
-            repeatInterval.toLong(),
-            TimeUnit.HOURS)
-            .addTag("notificationWorkRequest")
-            .setInitialDelay(repeatInterval.toLong(), TimeUnit.HOURS)
+            repeatInterval, TimeUnit.HOURS
+        ).addTag("notificationWorkRequest")
+            .setInitialDelay(10, TimeUnit.SECONDS)
             .build()
 
         WorkManager.getInstance(this).enqueueUniquePeriodicWork(
             "notificationWork",
-            ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE,
+            ExistingPeriodicWorkPolicy.UPDATE,
             notificationWorkRequest
         )
+        lastRepetition = repetition
+    }
+
+    private fun getRepeatIntervalInHours(repetition: RemindersRepetition): Int {
+        return when (repetition) {
+            RemindersRepetition.OnceADay -> 24
+            RemindersRepetition.ThreeADay -> 24 / 3
+            RemindersRepetition.FiveADay -> 24 / 5
+        }
     }
 
     companion object {
         private const val TAG = "MainActivity"
     }
 }
+
