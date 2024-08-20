@@ -28,11 +28,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Load Google Service file
-        env:
-          data: ${{secrets.GOOGLE_SERVICES_JSON}}
-        run: echo $DATA | base64 -di > app/google-services.json
-
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Build with Gradle
