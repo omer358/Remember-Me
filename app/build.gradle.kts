@@ -20,7 +20,7 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.example.rememberme.CustomTestRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -105,6 +105,17 @@ dependencies {
     implementation(libs.hilt.android)
     implementation(libs.androidx.hilt.navigation.compose)
     kapt(libs.hilt.compiler)
+
+    // For Robolectric tests.
+    testImplementation(libs.hilt.android.testing)
+    // ...with Kotlin.
+    kspTest(libs.hilt.android.compiler)
+
+    // For instrumented tests.
+
+    androidTestImplementation(libs.hilt.android.testing)
+    // ...with Kotlin.
+    kspAndroidTest(libs.hilt.android.compiler)
     // Hilt Worker
     implementation(libs.androidx.hilt.work)
     // When using Kotlin.
