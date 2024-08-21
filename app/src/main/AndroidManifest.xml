@@ -38,6 +38,15 @@
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"
             tools:node="remove" />
+
+        <receiver
+            android:name=".presentation.onboarding.NotificationActionReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="ACTION_OKAY" />
+                <action android:name="ACTION_DELETE" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

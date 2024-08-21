@@ -4,4 +4,6 @@
     <string name="notification_channel_description">Reminders about the people you have met</string>
     <string name="notification_title">Do you Remember %1$s?</string>
     <string name="notification_text">You have met him at %1$s</string>
+    <string name="okay">Okay</string>
+    <string name="delete">Delete</string>
 </resources>

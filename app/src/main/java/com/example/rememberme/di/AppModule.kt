@@ -34,6 +34,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Singleton
 
 @Module
@@ -78,14 +79,15 @@ object AppModule {
     @Provides
     @Singleton
     fun providePeopleUseCases(
-        peopleRepository: PeopleRepository
+        peopleRepository: PeopleRepository,
+        dispatcher: CoroutineDispatcher
     ): PeopleUseCases {
         return PeopleUseCases(
             getAllPeople = GetAllPeople(peopleRepository),
             getPersonById = GetPersonById(peopleRepository),
             insertPerson = InsertNewPerson(peopleRepository),
             updatePerson = UpdatePerson(peopleRepository),
-            deletePersonById = DeletePersonById(peopleRepository)
+            deletePersonById = DeletePersonById(peopleRepository, dispatcher)
         )
     }
 
