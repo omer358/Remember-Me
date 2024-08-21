@@ -13,16 +13,14 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/SplashScreenTheme"
+        android:theme="@style/Theme.App.SplashScreen"
         tools:targetApi="31">
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
-            android:theme="@style/SplashScreenTheme">
+            android:theme="@style/Theme.App.SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <intent-filter>
@@ -40,6 +38,15 @@
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"
             tools:node="remove" />
+
+        <receiver
+            android:name=".presentation.onboarding.NotificationActionReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="ACTION_OKAY" />
+                <action android:name="ACTION_DELETE" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

@@ -18,13 +18,15 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import com.example.rememberme.R
 import com.example.rememberme.domain.model.People
+import com.example.rememberme.presentation.onboarding.NotificationActionReceiver
+import com.example.rememberme.utils.Constants.NOTIFICATION_ID
+import com.example.rememberme.utils.Constants.PEOPLE_CHANNEL_ID
 import javax.inject.Inject
 
 class NotificationService @Inject constructor(private val context: Context) {
 
     companion object {
-        private const val CHANNEL_ID = "people_notification_channel"
-        private const val NOTIFICATION_ID = 0
+        private const val TAG = "NotificationService"
     }
 
     init {
@@ -36,7 +38,7 @@ class NotificationService @Inject constructor(private val context: Context) {
             val name = context.getString(R.string.notification_channel_name)
             val descriptionText = context.getString(R.string.notification_channel_description)
             val importance = NotificationManager.IMPORTANCE_HIGH
-            val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
+            val channel = NotificationChannel(PEOPLE_CHANNEL_ID, name, importance).apply {
                 description = descriptionText
             }
             val notificationManager: NotificationManager =
@@ -71,8 +73,31 @@ class NotificationService @Inject constructor(private val context: Context) {
         val drawable: Drawable? = ContextCompat.getDrawable(context, person.avatar)
         val largeIcon: Bitmap? = drawable?.let { drawableToBitmap(it) }
 
-        val notification = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_m2)
+        // Action for "Okay"
+        val okayIntent = Intent(context, NotificationActionReceiver::class.java).apply {
+            action = "ACTION_OKAY"
+        }
+        val okayPendingIntent: PendingIntent = PendingIntent.getBroadcast(
+            context,
+            0,
+            okayIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        // Action for "Delete"
+        val deleteIntent = Intent(context, NotificationActionReceiver::class.java).apply {
+            action = "ACTION_DELETE"
+            putExtra("personId", person.id)
+        }
+        val deletePendingIntent: PendingIntent = PendingIntent.getBroadcast(
+            context,
+            1,
+            deleteIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val notification = NotificationCompat.Builder(context, PEOPLE_CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_notifications)
             .setContentTitle(context.getString(R.string.notification_title, person.firstName))
             .setContentText(context.getString(R.string.notification_text, person.place))
             .setLargeIcon(largeIcon)
@@ -80,10 +105,21 @@ class NotificationService @Inject constructor(private val context: Context) {
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
             .setCategory(NotificationCompat.CATEGORY_REMINDER)
+            .addAction(
+                R.drawable.baseline_thumb_up_24,
+                context.getString(R.string.okay),
+                okayPendingIntent
+            )
+            .addAction(
+                R.drawable.baseline_delete_24,
+                context.getString(R.string.delete),
+                deletePendingIntent
+            )
             .build()
 
         NotificationManagerCompat.from(context).notify(NOTIFICATION_ID, notification)
     }
+
 
     private fun drawableToBitmap(drawable: Drawable): Bitmap {
         return if (drawable is BitmapDrawable) {
