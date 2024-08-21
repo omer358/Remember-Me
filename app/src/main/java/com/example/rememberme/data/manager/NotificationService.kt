@@ -72,7 +72,7 @@ class NotificationService @Inject constructor(private val context: Context) {
         val largeIcon: Bitmap? = drawable?.let { drawableToBitmap(it) }
 
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_m2)
+            .setSmallIcon(R.drawable.ic_notifications)
             .setContentTitle(context.getString(R.string.notification_title, person.firstName))
             .setContentText(context.getString(R.string.notification_text, person.place))
             .setLargeIcon(largeIcon)
