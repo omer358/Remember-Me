@@ -23,15 +23,18 @@ jobs:
           echo "export REMEMBER_ME_KEY_PASSWORD=${{ secrets.REMEMBER_ME_KEY_PASSWORD }}" >> $GITHUB_ENV
           echo "export REMEMBER_ME_KEYSTORE_PASSWORD=${{ secrets.E_COMMERCE_KEY_STORE_PASSWORD }}" >> $GITHUB_ENV
 
+      - name: Set GPG_TTY environment variable
+        run: echo "export GPG_TTY=true" >> $GITHUB_ENV
+
       - name: Decrypt Keystore File
         env:
-          RELEASE_KEYSTORE_PHRASE: ${{ secrets.REMEMBER_RELEASE_KEYSTORE }}
-          RELEASE_KEYSTORE_FILE: ${{ secrets.KEYSTORE_FILE }}
+          RELEASE_KEYSTORE_PHRASE: ${{ secrets.RELEASE_KEYSTORE_PHRASE }}
+          RELEASE_KEYSTORE_FILE: ${{ secrets.REMEMBER_RELEASE_KEYSTORE }}
         run: |
           mkdir keys
-          echo "$REMEMBER_RELEASE_KEYSTORE" > keys/keystore.jks.asc
-          echo "$RELEASE_KEYSTORE_PHRASE" > keystore_passphrase.txt
-          gpg -d --passphrase-file=keystore_passphrase.txt --batch keys/keystore.jks.asc > keys/keystore.jks
+          echo "$RELEASE_KEYSTORE_FILE" > keys/keystore.jks.asc
+          echo "$RELEASE_KEYSTORE_PHRASE" > keys/keystore_passphrase.txt
+          gpg -d --passphrase-file=keys/keystore_passphrase.txt --batch keys/keystore.jks.asc > keys/keystore.jks
 
       - name: Cache Gradle packages
         uses: actions/cache@v2
@@ -45,7 +48,11 @@ jobs:
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
+
       - name: Build with Gradle
+        env:
+          KEYPASSWORD: ${{ secrets.REMEMBER_ME_KEY_PASSWORD }}
+          STOREPASSWORD: ${{ secrets.REMEMBER_ME_KEY_STORE_PASSWORD }}
         run: ./gradlew build
 
       - name: Upload build artifacts
