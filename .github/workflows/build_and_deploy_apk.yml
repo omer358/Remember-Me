@@ -18,6 +18,21 @@ jobs:
           distribution: 'zulu'
           cache: gradle
 
+      - name: Set environment variables
+        run: |
+          echo "export REMEMBER_ME_KEY_PASSWORD=${{ secrets.REMEMBER_ME_KEY_PASSWORD }}" >> $GITHUB_ENV
+          echo "export REMEMBER_ME_KEYSTORE_PASSWORD=${{ secrets.E_COMMERCE_KEY_STORE_PASSWORD }}" >> $GITHUB_ENV
+
+      - name: Decrypt Keystore File
+        env:
+          RELEASE_KEYSTORE_PHRASE: ${{ secrets.REMEMBER_RELEASE_KEYSTORE }}
+          RELEASE_KEYSTORE_FILE: ${{ secrets.KEYSTORE_FILE }}
+        run: |
+          mkdir keys
+          echo "$REMEMBER_RELEASE_KEYSTORE" > keys/keystore.jks.asc
+          echo "$RELEASE_KEYSTORE_PHRASE" > keystore_passphrase.txt
+          gpg -d --passphrase-file=keystore_passphrase.txt --batch keys/keystore.jks.asc > keys/keystore.jks
+
       - name: Cache Gradle packages
         uses: actions/cache@v2
         with:
