@@ -10,6 +10,15 @@ plugins {
 }
 
 android {
+    signingConfigs {
+
+        create("release") {
+            storeFile = file("$projectDir/keys/keystore.jks")
+            storePassword = System.getenv("REMEMBER_ME_KEYSTORE_PASSWORD")
+            keyAlias = System.getenv("REMEMBER_ME_KEYSTORE_ALIAS")
+            keyPassword = System.getenv("REMEMBER_ME_KEY_PASSWORD")
+        }
+    }
     namespace = "com.example.rememberme"
     compileSdk = 34
 
@@ -35,10 +44,14 @@ android {
                 "proguard-rules.pro"
             )
             isDebuggable = false
+            multiDexEnabled = true
+            signingConfig = signingConfigs.getByName("release")
         }
         debug {
             isMinifyEnabled = false
             isDebuggable = true
+            multiDexEnabled = true
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {
