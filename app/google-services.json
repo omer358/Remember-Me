@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "567382024079",
-    "project_id": "remember-me-bcd80",
-    "storage_bucket": "remember-me-bcd80.appspot.com"
+    "project_number": "419011270502",
+    "project_id": "remember-me-b2fbe",
+    "storage_bucket": "remember-me-b2fbe.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:567382024079:android:797e9faec882ed07ec75fa",
+        "mobilesdk_app_id": "1:419011270502:android:71418afc043ecab38adaa7",
         "android_client_info": {
-          "package_name": "com.example.rememberme"
+          "package_name": "com.omo.rememberme"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBLLhJ9ymIEvsinNLYSr4lXdhO5mv0NMIE"
+          "current_key": "AIzaSyBYKZFTkQge8LVYCxo1fcW0BwiKszwC1CU"
         }
       ],
       "services": {
