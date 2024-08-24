@@ -20,8 +20,8 @@ jobs:
 
       - name: Set environment variables
         run: |
-          echo "export REMEMBER_ME_KEY_PASSWORD=${{ secrets.REMEMBER_ME_KEY_PASSWORD }}" >> $GITHUB_ENV
-          echo "export REMEMBER_ME_KEYSTORE_PASSWORD=${{ secrets.E_COMMERCE_KEY_STORE_PASSWORD }}" >> $GITHUB_ENV
+          echo "REMEMBER_ME_KEY_PASSWORD=${{ secrets.REMEMBER_ME_KEY_PASSWORD }}" >> $GITHUB_ENV
+          echo "REMEMBER_ME_KEYSTORE_PASSWORD=${{ secrets.REMEMBER_ME_KEYSTORE_PASSWORD }}" >> $GITHUB_ENV
 
       - name: Set GPG_TTY environment variable
         run: echo "export GPG_TTY=true" >> $GITHUB_ENV
