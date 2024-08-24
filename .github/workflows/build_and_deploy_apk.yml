@@ -22,6 +22,7 @@ jobs:
         run: |
           echo "REMEMBER_ME_KEY_PASSWORD=${{ secrets.REMEMBER_ME_KEY_PASSWORD }}" >> $GITHUB_ENV
           echo "REMEMBER_ME_KEYSTORE_PASSWORD=${{ secrets.REMEMBER_ME_KEYSTORE_PASSWORD }}" >> $GITHUB_ENV
+          echo "REMEMBER_ME_KEYSTORE_ALIAS=${{ secrets.REMEMBER_ME_KEYSTORE_ALIAS }}" >> $GITHUB_ENV
 
       - name: Set GPG_TTY environment variable
         run: echo "export GPG_TTY=true" >> $GITHUB_ENV
@@ -53,6 +54,7 @@ jobs:
         env:
           KEYPASSWORD: ${{ secrets.REMEMBER_ME_KEY_PASSWORD }}
           STOREPASSWORD: ${{ secrets.REMEMBER_ME_KEY_STORE_PASSWORD }}
+          KEYALIAS: ${{ secrets.REMEMBER_ME_KEYSTORE_ALIAS }
         run: ./gradlew build
 
       - name: Upload build artifacts
