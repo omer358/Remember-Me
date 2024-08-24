@@ -54,7 +54,7 @@ jobs:
         env:
           KEYPASSWORD: ${{ secrets.REMEMBER_ME_KEY_PASSWORD }}
           STOREPASSWORD: ${{ secrets.REMEMBER_ME_KEY_STORE_PASSWORD }}
-          KEYALIAS: ${{ secrets.REMEMBER_ME_KEYSTORE_ALIAS }
+          KEYALIAS: ${{ secrets.REMEMBER_ME_KEYSTORE_ALIAS }}
         run: ./gradlew build
 
       - name: Upload build artifacts
