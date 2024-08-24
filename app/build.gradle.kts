@@ -19,17 +19,17 @@ android {
             keyPassword = System.getenv("REMEMBER_ME_KEY_PASSWORD")
         }
     }
-    namespace = "com.example.rememberme"
+    namespace = "com.omo.rememberme"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.rememberme"
+        applicationId = "com.omo.rememberme"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "com.example.rememberme.CustomTestRunner"
+        testInstrumentationRunner = "com.omo.rememberme.CustomTestRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
