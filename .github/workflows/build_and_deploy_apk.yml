@@ -57,9 +57,19 @@ jobs:
           KEYALIAS: ${{ secrets.REMEMBER_ME_KEYSTORE_ALIAS }}
         run: ./gradlew build
 
+      - name: Build AAB with Gradle
+        env:
+          KEYPASSWORD: ${{ secrets.REMEMBER_ME_KEY_PASSWORD }}
+          STOREPASSWORD: ${{ secrets.REMEMBER_ME_KEYSTORE_PASSWORD }}
+          KEYALIAS: ${{ secrets.REMEMBER_ME_KEYSTORE_ALIAS }}
+        run: ./gradlew bundleRelease
+
       - name: Upload build artifacts
         uses: actions/upload-artifact@v2
         with:
           name: build
-          path: app/build/outputs/apk/release/*.apk
+          path: |
+            app/build/outputs/apk/release/*.apk
+            app/build/outputs/bundle/release/*.aab
+
     
