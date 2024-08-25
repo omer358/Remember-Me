@@ -6,8 +6,6 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.view.ContextThemeWrapper
-import android.widget.DatePicker
-import android.widget.TimePicker
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.clickable
@@ -60,7 +58,9 @@ import com.omo.rememberme.presentation.common.composables.CustomErrorText
 import com.omo.rememberme.presentation.common.composables.CustomOutlinedTextField
 import com.omo.rememberme.ui.theme.RememberMeTheme
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Locale
 
 private const val TAG = "AddPersonScreen"
 
@@ -241,26 +241,27 @@ fun DateTimePicker(
 ) {
     val context = LocalContext.current
     val calendar = Calendar.getInstance()
-    val selectedDateTime = remember { mutableStateOf("") }
-    selectedDateTime.value = uiState.time
+    val selectedDateTime = remember { mutableStateOf(uiState.time) }
 
     if (uiState.time.isBlank()) {
         calendar.timeInMillis = System.currentTimeMillis()
     }
-    // Create a ContextThemeWrapper with your custom theme
+
+    val dateFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm", Locale.getDefault())
+
     val datePickerDialogContext = ContextThemeWrapper(context, R.style.Theme_RememberMe)
     val timePickerDialogContext = ContextThemeWrapper(context, R.style.Theme_RememberMe)
 
     val datePickerDialog = DatePickerDialog(
         datePickerDialogContext,
-        { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
+        { _, year: Int, month: Int, dayOfMonth: Int ->
             calendar.set(year, month, dayOfMonth)
             val timePickerDialog = TimePickerDialog(
                 timePickerDialogContext,
-                { _: TimePicker, hourOfDay: Int, minute: Int ->
+                { _, hourOfDay: Int, minute: Int ->
                     calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
                     calendar.set(Calendar.MINUTE, minute)
-                    selectedDateTime.value = "${dayOfMonth}/${month + 1}/${year} ${hourOfDay}:${minute}"
+                    selectedDateTime.value = dateFormatter.format(calendar.time)
                     onDateTimeChange(selectedDateTime.value)
                 },
                 calendar.get(Calendar.HOUR_OF_DAY),
@@ -276,15 +277,11 @@ fun DateTimePicker(
 
     Column {
         OutlinedButton(onClick = { datePickerDialog.show() }) {
-            if(selectedDateTime.value.isEmpty()) {
-                Text(text = "Pick Date & Time")
-            }else{
-                Text(text = uiState.time)
-            }
+            Text(text = if (selectedDateTime.value.isEmpty()) "Pick Date & Time" else selectedDateTime.value)
         }
-        if (uiState.timeError != null) {
+        uiState.timeError?.let {
             Text(
-                text = uiState.timeError,
+                text = it,
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.bodySmall,
                 modifier = Modifier.padding(start = 16.dp)
@@ -292,6 +289,7 @@ fun DateTimePicker(
         }
     }
 }
+
 
 @Composable
 fun AvatarPicker(

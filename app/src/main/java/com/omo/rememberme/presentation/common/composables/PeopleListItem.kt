@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import com.omo.rememberme.R
 import com.omo.rememberme.domain.model.People
 import com.omo.rememberme.ui.theme.RememberMeTheme
+import com.omo.rememberme.utils.formatElapsedTime
 
 @Composable
 fun PeopleListItem(
@@ -45,7 +46,7 @@ fun PeopleListItem(
             Text(people.place)
         },
         trailingContent = {
-            Text(people.time)
+            Text(formatElapsedTime(people.time))
         },
         tonalElevation = 2.dp, // Adjust tonal elevation
         shadowElevation = 4.dp // Adjust shadow elevation,
