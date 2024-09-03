@@ -19,6 +19,9 @@ import com.omo.rememberme.domain.usecases.add_person.ValidateGenderSelectionUseC
 import com.omo.rememberme.domain.usecases.add_person.ValidateNamesUseCase
 import com.omo.rememberme.domain.usecases.add_person.ValidatePlaceUseCase
 import com.omo.rememberme.domain.usecases.add_person.ValidateTimeUseCase
+import com.omo.rememberme.domain.usecases.app_entry.AppEntryUseCases
+import com.omo.rememberme.domain.usecases.app_entry.ReadAppEntry
+import com.omo.rememberme.domain.usecases.app_entry.SaveAppEntry
 import com.omo.rememberme.domain.usecases.people.DeletePersonById
 import com.omo.rememberme.domain.usecases.people.GetAllPeople
 import com.omo.rememberme.domain.usecases.people.GetPersonById
@@ -99,7 +102,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideAddPersonUseCases(): AddPersonUseCases{
+    fun provideAddPersonUseCases(): AddPersonUseCases {
         return AddPersonUseCases(
             validateNamesUseCase = ValidateNamesUseCase(),
             validatePlaceUseCase = ValidatePlaceUseCase(),
@@ -112,7 +115,7 @@ object AppModule {
     @Singleton
     fun provideThemeModeUseCases(
         settingsManager: SettingsManager
-    ): ThemeUseCases{
+    ): ThemeUseCases {
         return ThemeUseCases(
             setThemeMode = SetThemeMode(settingsManager),
             getThemeMode = GetThemeMode(settingsManager),
@@ -124,7 +127,7 @@ object AppModule {
     @Singleton
     fun provideReminderUseCases(
         settingsManager: SettingsManager
-    ): ReminderUseCases{
+    ): ReminderUseCases {
         return ReminderUseCases(
             getSchedule = GetSchedule(settingsManager),
             setSchedule = SetSchedule(settingsManager)
@@ -138,7 +141,7 @@ object AppModule {
     }
 
 
-     val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = ONBOARDING_SETTINGS)
+    val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = ONBOARDING_SETTINGS)
 
     @Provides
     @Singleton
@@ -153,5 +156,16 @@ object AppModule {
         dataStore: DataStore<Preferences>
     ): OnBoardingManager {
         return OnBoardingManagerImpl(context, dataStore)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAppEntryUseCases(
+        onBoardingManager: OnBoardingManager
+    ): AppEntryUseCases {
+        return AppEntryUseCases(
+            readAppEntry = ReadAppEntry(onBoardingManager),
+            saveAppEntry = SaveAppEntry(onBoardingManager)
+        )
     }
 }
