@@ -80,7 +80,7 @@ fun OnBoardingScreenContent(
                 .fillMaxWidth()
                 .padding(horizontal = 30.dp)
                 .navigationBarsPadding(),
-            horizontalArrangement = Arrangement.SpaceBetween,
+            horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
             val scope = rememberCoroutineScope()
