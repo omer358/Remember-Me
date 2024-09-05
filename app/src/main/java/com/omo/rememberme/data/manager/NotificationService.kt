@@ -16,9 +16,9 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
+import com.omo.rememberme.NotificationActionReceiver
 import com.omo.rememberme.R
 import com.omo.rememberme.domain.model.People
-import com.omo.rememberme.presentation.onboarding.NotificationActionReceiver
 import com.omo.rememberme.utils.Constants.NOTIFICATION_ID
 import com.omo.rememberme.utils.Constants.PEOPLE_CHANNEL_ID
 import javax.inject.Inject

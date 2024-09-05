@@ -40,7 +40,7 @@
             tools:node="remove" />
 
         <receiver
-            android:name=".presentation.onboarding.NotificationActionReceiver"
+            android:name=".NotificationActionReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="ACTION_OKAY" />

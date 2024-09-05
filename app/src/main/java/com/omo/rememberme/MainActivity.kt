@@ -19,16 +19,22 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.omo.rememberme.data.manager.NotificationWorker
 import com.omo.rememberme.domain.model.RemindersRepetition
+import com.omo.rememberme.domain.usecases.app_entry.AppEntryUseCases
 import com.omo.rememberme.presentation.settings.SettingsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val settingsViewModel: SettingsViewModel by viewModels()
+    private val mainViewModel: MainViewModel by viewModels()
+    @Inject
+    lateinit var appEntryUseCases: AppEntryUseCases
+
     private var lastRepetition: RemindersRepetition? = null
 
     private val requestPermissionLauncher = registerForActivityResult(
@@ -39,14 +45,18 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setupUI()
+        setupUI(viewModel = mainViewModel)
         observeUiState()
     }
 
-    private fun setupUI() {
+    private fun setupUI(viewModel: MainViewModel) {
         enableEdgeToEdge()
-        installSplashScreen()
-        setContent { RememberMeApp() }
+        installSplashScreen().apply {
+            setKeepOnScreenCondition{
+                viewModel.splashCondition
+            }
+        }
+        setContent { RememberMeApp(viewModel.startDestination) }
     }
 
     private fun observeUiState() {

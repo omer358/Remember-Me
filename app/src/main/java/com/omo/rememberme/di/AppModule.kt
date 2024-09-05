@@ -2,11 +2,16 @@ package com.omo.rememberme.di
 
 import android.app.Application
 import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.room.Room
 import com.omo.rememberme.data.PeopleRepositoryImpl
 import com.omo.rememberme.data.local.PeopleDatabase
 import com.omo.rememberme.data.manager.NotificationService
+import com.omo.rememberme.data.manager.OnBoardingManagerImpl
 import com.omo.rememberme.data.manager.SettingsManagerImpl
+import com.omo.rememberme.domain.manager.OnBoardingManager
 import com.omo.rememberme.domain.manager.SettingsManager
 import com.omo.rememberme.domain.repository.PeopleRepository
 import com.omo.rememberme.domain.usecases.add_person.AddPersonUseCases
@@ -14,6 +19,9 @@ import com.omo.rememberme.domain.usecases.add_person.ValidateGenderSelectionUseC
 import com.omo.rememberme.domain.usecases.add_person.ValidateNamesUseCase
 import com.omo.rememberme.domain.usecases.add_person.ValidatePlaceUseCase
 import com.omo.rememberme.domain.usecases.add_person.ValidateTimeUseCase
+import com.omo.rememberme.domain.usecases.app_entry.AppEntryUseCases
+import com.omo.rememberme.domain.usecases.app_entry.ReadAppEntry
+import com.omo.rememberme.domain.usecases.app_entry.SaveAppEntry
 import com.omo.rememberme.domain.usecases.people.DeletePersonById
 import com.omo.rememberme.domain.usecases.people.GetAllPeople
 import com.omo.rememberme.domain.usecases.people.GetPersonById
@@ -27,6 +35,7 @@ import com.omo.rememberme.domain.usecases.theme.GetThemeMode
 import com.omo.rememberme.domain.usecases.theme.IsDarkModeEnabled
 import com.omo.rememberme.domain.usecases.theme.SetThemeMode
 import com.omo.rememberme.domain.usecases.theme.ThemeUseCases
+import com.omo.rememberme.utils.Constants.ONBOARDING_SETTINGS
 import com.omo.rememberme.utils.Constants.PEOPLE_DATABASE_NAME
 import com.omo.remindme.database.PeopleDao
 import dagger.Module
@@ -93,7 +102,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideAddPersonUseCases(): AddPersonUseCases{
+    fun provideAddPersonUseCases(): AddPersonUseCases {
         return AddPersonUseCases(
             validateNamesUseCase = ValidateNamesUseCase(),
             validatePlaceUseCase = ValidatePlaceUseCase(),
@@ -106,7 +115,7 @@ object AppModule {
     @Singleton
     fun provideThemeModeUseCases(
         settingsManager: SettingsManager
-    ): ThemeUseCases{
+    ): ThemeUseCases {
         return ThemeUseCases(
             setThemeMode = SetThemeMode(settingsManager),
             getThemeMode = GetThemeMode(settingsManager),
@@ -118,7 +127,7 @@ object AppModule {
     @Singleton
     fun provideReminderUseCases(
         settingsManager: SettingsManager
-    ): ReminderUseCases{
+    ): ReminderUseCases {
         return ReminderUseCases(
             getSchedule = GetSchedule(settingsManager),
             setSchedule = SetSchedule(settingsManager)
@@ -129,5 +138,34 @@ object AppModule {
     @Singleton
     fun provideNotificationService(@ApplicationContext context: Context): NotificationService {
         return NotificationService(context)
+    }
+
+
+    val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = ONBOARDING_SETTINGS)
+
+    @Provides
+    @Singleton
+    fun provideDataStore(@ApplicationContext context: Context): DataStore<Preferences> {
+        return context.dataStore
+    }
+
+    @Provides
+    @Singleton
+    fun provideOnBoardingManagerImpl(
+        @ApplicationContext context: Context,
+        dataStore: DataStore<Preferences>
+    ): OnBoardingManager {
+        return OnBoardingManagerImpl(context, dataStore)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAppEntryUseCases(
+        onBoardingManager: OnBoardingManager
+    ): AppEntryUseCases {
+        return AppEntryUseCases(
+            readAppEntry = ReadAppEntry(onBoardingManager),
+            saveAppEntry = SaveAppEntry(onBoardingManager)
+        )
     }
 }

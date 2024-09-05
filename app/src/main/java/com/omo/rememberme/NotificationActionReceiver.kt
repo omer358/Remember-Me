@@ -1,4 +1,4 @@
-package com.omo.rememberme.presentation.onboarding
+package com.omo.rememberme
 
 import android.content.BroadcastReceiver
 import android.content.Context

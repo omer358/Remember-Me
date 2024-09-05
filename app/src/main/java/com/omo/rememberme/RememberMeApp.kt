@@ -14,7 +14,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.omo.rememberme.domain.model.ThemeMode
 import com.omo.rememberme.presentation.navgraph.NavGraph
-import com.omo.rememberme.presentation.navgraph.Routes
 import com.omo.rememberme.presentation.settings.SettingsViewModel
 import com.omo.rememberme.ui.theme.RememberMeTheme
 
@@ -23,9 +22,10 @@ private const val TAG = "RememberMeApp"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RememberMeApp() {
+fun RememberMeApp(startDestination: String) {
     val viewModel: SettingsViewModel = hiltViewModel()
-    
+
+
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val themeMode = uiState.theme
     val isDarkTheme = when (themeMode) {
@@ -41,7 +41,7 @@ fun RememberMeApp() {
             modifier = Modifier.fillMaxSize(),
         ) {
             NavGraph(
-                startDestination = Routes.PeopleNavigation.route
+                startDestination = startDestination
             )
         }
     }
@@ -52,5 +52,5 @@ fun RememberMeApp() {
 @Preview(uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun RememberMeAppPreview() {
-    RememberMeApp()
+    RememberMeApp(startDestination = "onBoardingScreen")
 }
