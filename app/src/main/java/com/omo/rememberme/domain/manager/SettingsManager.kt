@@ -10,4 +10,6 @@ interface SettingsManager {
     suspend fun isDarkModeEnabled(): Flow<Boolean>
     suspend fun getSchedules(): Flow<RemindersRepetition>
     suspend fun setSchedules(schedules: RemindersRepetition)
+    suspend fun saveNotificationStatus(enabled: Boolean)
+    suspend fun isNotificationEnabled(): Flow<Boolean>
 }

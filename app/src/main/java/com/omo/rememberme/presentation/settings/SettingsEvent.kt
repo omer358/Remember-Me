@@ -8,4 +8,6 @@ sealed class SettingsEvent {
     data object GetTheme : SettingsEvent()
     data class ChangeRemindersRepetition(val repetition: RemindersRepetition) : SettingsEvent()
     data object GetRemindersRepetition : SettingsEvent()
+    data object LoadNotificationsStatus: SettingsEvent()
+    data class ToggleNotifications(val enabled: Boolean) : SettingsEvent()
 }

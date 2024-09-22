@@ -1,10 +1,8 @@
 package com.omo.rememberme
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import android.util.Log
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -20,7 +18,6 @@ import com.omo.rememberme.ui.theme.RememberMeTheme
 
 private const val TAG = "RememberMeApp"
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RememberMeApp(startDestination: String) {
     val viewModel: SettingsViewModel = hiltViewModel()
@@ -33,7 +30,6 @@ fun RememberMeApp(startDestination: String) {
         ThemeMode.DARK -> true
         ThemeMode.SYSTEM -> isSystemInDarkTheme()
     }
-    Log.i(TAG, "RememberMeApp: $isDarkTheme")
     RememberMeTheme(
         darkTheme = isDarkTheme
     ){

@@ -27,6 +27,7 @@ class SettingsViewModel @Inject constructor(
         Log.d(TAG, "ViewModel initialized")
         getCurrentTheme()
         getCurrentRemindersRepetition()
+        loadNotificationStatus()
     }
 
     fun onEvent(event: SettingsEvent) {
@@ -46,6 +47,12 @@ class SettingsViewModel @Inject constructor(
             is SettingsEvent.GetRemindersRepetition -> {
                 Log.d(TAG, "onEvent: GetRemindersRepetition")
                 getCurrentRemindersRepetition()
+            }
+            is SettingsEvent.LoadNotificationsStatus -> {
+                loadNotificationStatus()
+            }
+            is SettingsEvent.ToggleNotifications -> {
+                toggleNotification(event.enabled)
             }
         }
     }
@@ -86,6 +93,26 @@ class SettingsViewModel @Inject constructor(
                 )
                 _uiState.update { it.copy(remindersRepetition = currentRepetition) }
             }
+        }
+    }
+
+    private fun loadNotificationStatus() {
+        viewModelScope.launch {
+            Log.d(TAG, "getCurrentNotificationsStatus: Fetching current Notifications status")
+
+            reminderUseCases.isNotificationEnabled()
+                .collect { isEnabled ->
+                    Log.d(TAG, "loadNotificationStatus: Current notification status is: $isEnabled")
+                    _uiState.update { it.copy(notificationsEnabled = isEnabled)}
+                }
+        }
+    }
+
+    private fun toggleNotification(isEnabled: Boolean) {
+        viewModelScope.launch {
+            reminderUseCases.setNotificationEnabled(isEnabled)
+            _uiState.value = _uiState.value.copy(notificationsEnabled = isEnabled)
+            loadNotificationStatus()
         }
     }
 
