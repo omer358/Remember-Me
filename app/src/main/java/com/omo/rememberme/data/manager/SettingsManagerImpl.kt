@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -64,12 +65,25 @@ class SettingsManagerImpl @Inject constructor(
         }
     }
 
+    override suspend fun saveNotificationStatus(enabled: Boolean) {
+        context.dataStore.edit { preferences ->
+            preferences[PreferencesKeys.REMINDERS_ENABLED] = enabled
+        }
+    }
+
+    override suspend fun isNotificationEnabled(): Flow<Boolean> {
+        return context.dataStore.data.map { preferences ->
+            preferences[PreferencesKeys.REMINDERS_ENABLED] ?: false
+        }
+    }
+
     companion object {
         private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = REMEMBER_ME_SETTING_NAME)
 
         private object PreferencesKeys {
             val UI_MODE = intPreferencesKey(Constants.UI_MODE)
             val SCHEDULE = intPreferencesKey(Constants.SCHEDULE)
+            val REMINDERS_ENABLED = booleanPreferencesKey(Constants.REMINDERS_ENABLED)
         }
 
         private const val TAG = "SettingsManagerImpl"

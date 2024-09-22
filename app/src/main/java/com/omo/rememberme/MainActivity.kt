@@ -32,6 +32,7 @@ class MainActivity : ComponentActivity() {
 
     private val settingsViewModel: SettingsViewModel by viewModels()
     private val mainViewModel: MainViewModel by viewModels()
+
     @Inject
     lateinit var appEntryUseCases: AppEntryUseCases
 
@@ -52,7 +53,7 @@ class MainActivity : ComponentActivity() {
     private fun setupUI(viewModel: MainViewModel) {
         enableEdgeToEdge()
         installSplashScreen().apply {
-            setKeepOnScreenCondition{
+            setKeepOnScreenCondition {
                 viewModel.splashCondition
             }
         }
@@ -62,15 +63,26 @@ class MainActivity : ComponentActivity() {
     private fun observeUiState() {
         lifecycleScope.launch {
             settingsViewModel.uiState.collect { uiState ->
-                if (shouldScheduleWork(uiState.remindersRepetition)) {
-                    handlePermissionsAndScheduleWork(uiState.remindersRepetition)
+                Log.i(TAG,"the SettingsUiState has changed!: $uiState")
+                if (uiState.notificationsEnabled) {
+                    Log.i(TAG,"the notifications is enabled")
+                    if (shouldScheduleWork(uiState.remindersRepetition)) {
+                        Log.i(TAG,"Should scheduleWork")
+                        handlePermissionsAndScheduleWork(uiState.remindersRepetition)
+                    }
+                    Log.i(TAG,"Should not schedule work, the reminder is duplicated")
+                } else {
+                    Log.i(TAG,"Should not cancel work")
+                    cancelNotificationWork()
                 }
             }
         }
     }
 
-    private fun shouldScheduleWork(currentRepetition: RemindersRepetition): Boolean {
-        return currentRepetition != lastRepetition
+    private fun shouldScheduleWork(
+        currentRepetition: RemindersRepetition
+    ): Boolean {
+        return (currentRepetition != lastRepetition)
     }
 
     private fun handlePermissionsAndScheduleWork(repetition: RemindersRepetition) {
@@ -100,7 +112,10 @@ class MainActivity : ComponentActivity() {
     private fun handlePermissionResult(isGranted: Boolean) {
         lifecycleScope.launch {
             settingsViewModel.uiState.collect { uiState ->
-                if (isGranted && shouldScheduleWork(uiState.remindersRepetition)) {
+                if (isGranted && shouldScheduleWork(
+                        uiState.remindersRepetition
+                    )
+                ) {
                     scheduleNotificationWork(uiState.remindersRepetition)
                 }
             }
@@ -124,6 +139,14 @@ class MainActivity : ComponentActivity() {
             notificationWorkRequest
         )
         lastRepetition = repetition
+    }
+
+    private fun cancelNotificationWork() {
+        Log.i(TAG, "Cancelling notification work")
+        val cancelUniqueWork = WorkManager.getInstance(this).cancelUniqueWork("notificationWork")
+        cancelUniqueWork.result.run {
+            Log.i(TAG, "Notification work cancelled")
+        }
     }
 
     private fun getRepeatIntervalInHours(repetition: RemindersRepetition): Int {

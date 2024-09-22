@@ -29,7 +29,9 @@ import com.omo.rememberme.domain.usecases.people.InsertNewPerson
 import com.omo.rememberme.domain.usecases.people.PeopleUseCases
 import com.omo.rememberme.domain.usecases.people.UpdatePerson
 import com.omo.rememberme.domain.usecases.reminders.GetSchedule
+import com.omo.rememberme.domain.usecases.reminders.IsNotificationEnabled
 import com.omo.rememberme.domain.usecases.reminders.ReminderUseCases
+import com.omo.rememberme.domain.usecases.reminders.SetNotificationEnabled
 import com.omo.rememberme.domain.usecases.reminders.SetSchedule
 import com.omo.rememberme.domain.usecases.theme.GetThemeMode
 import com.omo.rememberme.domain.usecases.theme.IsDarkModeEnabled
@@ -130,7 +132,9 @@ object AppModule {
     ): ReminderUseCases {
         return ReminderUseCases(
             getSchedule = GetSchedule(settingsManager),
-            setSchedule = SetSchedule(settingsManager)
+            setSchedule = SetSchedule(settingsManager),
+            setNotificationEnabled = SetNotificationEnabled(settingsManager),
+            isNotificationEnabled = IsNotificationEnabled(settingsManager)
         )
     }
 

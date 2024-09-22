@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -22,6 +23,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -57,6 +59,9 @@ fun SettingsScreen(
         },
         onRepetitionSelected = { repetition ->
             viewModel.onEvent(SettingsEvent.ChangeRemindersRepetition(repetition))
+        },
+        onNotificationStatusChanged = { isEnabled: Boolean ->
+            viewModel.onEvent(SettingsEvent.ToggleNotifications(isEnabled))
         }
     )
 }
@@ -68,7 +73,8 @@ fun SettingsScreenContent(
     onBackClick: () -> Unit = {},
     state: SettingsUiState,
     onThemeSelected: (ThemeMode) -> Unit,
-    onRepetitionSelected: (RemindersRepetition) -> Unit
+    onRepetitionSelected: (RemindersRepetition) -> Unit,
+    onNotificationStatusChanged: (Boolean) -> Unit
 ) {
     var showThemeDialog by rememberSaveable { mutableStateOf(false) }
     var showRepetitionDialog by rememberSaveable { mutableStateOf(false) }
@@ -128,6 +134,30 @@ fun SettingsScreenContent(
                 supportingContent = {
                     Text(text = state.remindersRepetition.toString())
                 },
+            )
+            ListItem(
+                modifier = Modifier,
+                headlineContent = {
+                    Text(text = "Enable Reminders")
+                },
+                leadingContent = {
+                    Icon(
+                        imageVector = Icons.Default.CheckCircle,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                },
+                supportingContent = {
+                    Text(text = state.remindersRepetition.toString())
+                },
+                trailingContent = {
+                    Switch(
+                        checked = state.notificationsEnabled,
+                        onCheckedChange = {onNotificationStatusChanged(
+                            state.notificationsEnabled.not()
+                        )}
+                    )
+                }
             )
         }
     }
@@ -292,7 +322,8 @@ fun SettingsScreenPreview() {
                     remindersRepetition = RemindersRepetition.OnceADay
                 ),
                 onThemeSelected = {},
-                onRepetitionSelected = {}
+                onRepetitionSelected = {},
+                onNotificationStatusChanged = { }
             )
         }
     }
